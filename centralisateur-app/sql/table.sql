@@ -38,4 +38,9 @@ CREATE TABLE IF NOT EXISTS mvt_client (
     date_mvt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+INSERT INTO admin_banque (nom, adresse, telephone, email, mot_de_passe)
+VALUES ('SuperAdmin', '123 Avenue Banque', '0123456789', 'admin@banque.com', 'motdepasse123');
 
+INSERT INTO statut_client (libelle) VALUES ('ACTIF');
+INSERT INTO statut_client (libelle) VALUES ('BLOQUE');
+INSERT INTO statut_client (libelle) VALUES ('INACTIF');

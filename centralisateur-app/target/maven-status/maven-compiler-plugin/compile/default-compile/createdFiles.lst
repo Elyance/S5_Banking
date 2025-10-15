@@ -1,0 +1,11 @@
+com/centralisateur/controller/AdminController.class
+com/centralisateur/entity/AdminBanque.class
+com/centralisateur/repository/AdminBanqueRepository.class
+com/centralisateur/repository/ClientRepository.class
+com/centralisateur/controller/DashboardController.class
+com/centralisateur/repository/MvtClientRepository.class
+com/centralisateur/entity/StatutClient.class
+com/centralisateur/entity/Client.class
+com/centralisateur/repository/StatutClientRepository.class
+com/centralisateur/service/AdminService.class
+com/centralisateur/entity/MvtClient.class

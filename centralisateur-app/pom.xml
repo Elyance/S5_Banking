@@ -18,7 +18,7 @@
 
 
     <build>
-        <finalName>Compte_courant</finalName>
+        <finalName>centralisateur-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
