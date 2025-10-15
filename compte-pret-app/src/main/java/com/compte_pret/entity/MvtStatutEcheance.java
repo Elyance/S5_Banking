@@ -1,7 +1,7 @@
 package com.compte_pret.entity;
 
 import jakarta.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mvt_statut_echeance")
@@ -19,7 +19,7 @@ public class MvtStatutEcheance {
     private StatutEcheance statutEcheance;
 
     @Column(name = "date_changement")
-    private OffsetDateTime dateChangement;
+    private LocalDateTime dateChangement;
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -28,6 +28,6 @@ public class MvtStatutEcheance {
     public void setEcheance(Echeance echeance) { this.echeance = echeance; }
     public StatutEcheance getStatutEcheance() { return statutEcheance; }
     public void setStatutEcheance(StatutEcheance statutEcheance) { this.statutEcheance = statutEcheance; }
-    public OffsetDateTime getDateChangement() { return dateChangement; }
-    public void setDateChangement(OffsetDateTime dateChangement) { this.dateChangement = dateChangement; }
+    public LocalDateTime getDateChangement() { return dateChangement; }
+    public void setDateChangement(LocalDateTime dateChangement) { this.dateChangement = dateChangement; }
 }

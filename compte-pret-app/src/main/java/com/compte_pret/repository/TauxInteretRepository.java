@@ -14,4 +14,11 @@ public class TauxInteretRepository {
     public void save(TauxInteret tauxInteret) {
         em.persist(tauxInteret);
     }
+
+    // find latest taux d'interet
+    public TauxInteret findLatest() {
+        return em.createQuery("SELECT t FROM TauxInteret t ORDER BY t.dateDebut DESC", TauxInteret.class)
+                 .setMaxResults(1)
+                 .getSingleResult();
+    }
 }

@@ -960,22 +960,30 @@
             <div class="nav-section">
                 <div class="nav-section-title">Comptes Prêt</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-pret/liste" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/liste') ? 'active' : ''}"
+                    <a href="${pageContext.request.contextPath}/compte-pret/list" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/list') ? 'active' : ''}"
                        data-tooltip="Liste des prêts">
                         <i class="fas fa-hand-holding-usd"></i>
-                        <span class="nav-link-text">Tous les prêts</span>
+                        <span class="nav-link-text">Tous les comptes prêts</span>
                         <c:if test="${nombreComptesPret != null && nombreComptesPret > 0}">
                             <span class="nav-badge">${nombreComptesPret}</span>
                         </c:if>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-pret/creer" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/creer') ? 'active' : ''}"
+                    <a href="${pageContext.request.contextPath}/compte-pret/taux-interet" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/taux-interet') ? 'active' : ''}"
+                       data-tooltip="Nouveau taux d'interet">
+                        <i class="fas fa-hand-holding-usd"></i>
+                        <span class="nav-link-text">Taux d'interet</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="${pageContext.request.contextPath}/compte-pret/create" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/create') ? 'active' : ''}"
                        data-tooltip="Nouveau prêt">
                         <i class="fas fa-plus-circle"></i>
-                        <span class="nav-link-text">Nouveau prêt</span>
+                        <span class="nav-link-text">Nouveau compte prêt</span>
                     </a>
                 </div>
                 <div class="nav-item">

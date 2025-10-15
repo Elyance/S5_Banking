@@ -12,8 +12,8 @@ public class Echeance {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "compte_pret_id", nullable = false)
-    private ComptePret comptePret;
+    @JoinColumn(name = "contrat_pret_id", nullable = false)
+    private ContratPret contratPret;
 
     @Column(name = "date_echeance", nullable = false)
     private LocalDate dateEcheance;
@@ -27,12 +27,13 @@ public class Echeance {
     // Getters & Setters
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
-    public ComptePret getComptePret() { return comptePret; }
-    public void setComptePret(ComptePret comptePret) { this.comptePret = comptePret; }
+    public ContratPret getContratPret() { return contratPret; }
+    public void setContratPret(ContratPret contratPret) { this.contratPret = contratPret; }
     public LocalDate getDateEcheance() { return dateEcheance; }
     public void setDateEcheance(LocalDate dateEcheance) { this.dateEcheance = dateEcheance; }
     public BigDecimal getMontantCapital() { return montantCapital; }
     public void setMontantCapital(BigDecimal montantCapital) { this.montantCapital = montantCapital; }
     public BigDecimal getMontantInteret() { return montantInteret; }
     public void setMontantInteret(BigDecimal montantInteret) { this.montantInteret = montantInteret; }
+
 }

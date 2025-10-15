@@ -2,7 +2,7 @@ package com.compte_pret.entity;
 
 import jakarta.persistence.*;
 import java.math.BigDecimal;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "compte_pret")
@@ -21,7 +21,7 @@ public class ComptePret {
     private BigDecimal soldeRestantDu;
 
     @Column(name = "date_creation")
-    private OffsetDateTime dateCreation;
+    private LocalDateTime dateCreation;
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -32,6 +32,6 @@ public class ComptePret {
     public void setClientId(Long clientId) { this.clientId = clientId; }
     public BigDecimal getSoldeRestantDu() { return soldeRestantDu; }
     public void setSoldeRestantDu(BigDecimal soldeRestantDu) { this.soldeRestantDu = soldeRestantDu; }
-    public OffsetDateTime getDateCreation() { return dateCreation; }
-    public void setDateCreation(OffsetDateTime dateCreation) { this.dateCreation = dateCreation; }
+    public LocalDateTime getDateCreation() { return dateCreation; }
+    public void setDateCreation(LocalDateTime dateCreation) { this.dateCreation = dateCreation; }
 }

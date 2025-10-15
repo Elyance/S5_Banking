@@ -14,6 +14,7 @@ com/centralisateur/entity/AdminBanque.class
 com/centralisateur/dto/ClientWithStatusDTO.class
 com/centralisateur/service/ComptePretService.class
 com/centralisateur/controller/ComptePretController.class
+com/centralisateur/dto/ComptePretAvecClient.class
 com/centralisateur/controller/DashboardController.class
 com/centralisateur/dto/CompteCourantAvecClient.class
 com/centralisateur/entity/MvtClient.class

@@ -1,7 +1,7 @@
 package com.compte_pret.entity;
 
 import jakarta.persistence.*;
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "mvt_statut_compte_pret")
@@ -19,7 +19,10 @@ public class MvtStatutComptePret {
     private StatutComptePret statutComptePret;
 
     @Column(name = "date_changement")
-    private OffsetDateTime dateChangement;
+    private LocalDateTime dateChangement;
+
+    public MvtStatutComptePret() {
+    }
 
     // Getters & Setters
     public Long getId() { return id; }
@@ -28,6 +31,6 @@ public class MvtStatutComptePret {
     public void setComptePret(ComptePret comptePret) { this.comptePret = comptePret; }
     public StatutComptePret getStatutComptePret() { return statutComptePret; }
     public void setStatutComptePret(StatutComptePret statutComptePret) { this.statutComptePret = statutComptePret; }
-    public OffsetDateTime getDateChangement() { return dateChangement; }
-    public void setDateChangement(OffsetDateTime dateChangement) { this.dateChangement = dateChangement; }
+    public LocalDateTime getDateChangement() { return dateChangement; }
+    public void setDateChangement(LocalDateTime dateChangement) { this.dateChangement = dateChangement; }
 }

@@ -53,7 +53,7 @@ CREATE TABLE contrat_pret (
 
 CREATE TABLE echeances (
     id BIGSERIAL PRIMARY KEY,
-    compte_pret_id BIGINT NOT NULL REFERENCES compte_pret(id) ON DELETE CASCADE,
+    contrat_pret_id BIGINT NOT NULL REFERENCES contrat_pret(id) ON DELETE CASCADE,
     
     -- Informations de l'échéance
     date_echeance DATE NOT NULL,
@@ -74,3 +74,19 @@ CREATE TABLE mvt_statut_echeance (
     date_changement TIMESTAMP WITH TIME ZONE DEFAULT CURRENT_TIMESTAMP
 );
 
+-- Statuts de compte prêt
+INSERT INTO statut_compte_pret (libelle) VALUES
+  ('ACTIF'),
+  ('SUSPENDU'),
+  ('INACTIF');
+
+-- Statuts d’échéance
+INSERT INTO statut_echeance (libelle) VALUES
+  ('PAYÉ'),
+  ('NON PAYÉ');
+
+  INSERT INTO type_paiement (libelle, valeur) VALUES
+  ('Mensuel', 1),
+  ('Trimestriel', 3),
+  ('Semestriel', 6),
+  ('Annuel', 12);
