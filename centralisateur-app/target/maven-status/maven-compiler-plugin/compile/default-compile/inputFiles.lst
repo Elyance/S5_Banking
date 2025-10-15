@@ -1,11 +1,14 @@
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/dto/ClientWithStatusDTO.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/repository/MvtClientRepository.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/DashboardController.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/entity/Client.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/repository/ClientRepository.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/entity/AdminBanque.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/service/AdminService.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/repository/AdminBanqueRepository.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/ClientController.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/entity/MvtClient.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/entity/StatutClient.java
-/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/service/AdminService.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/repository/StatutClientRepository.java
-/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/repository/AdminBanqueRepository.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/AdminController.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/service/ClientService.java

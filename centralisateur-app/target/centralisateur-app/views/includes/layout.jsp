@@ -907,16 +907,16 @@
             <div class="nav-section">
                 <div class="nav-section-title">Clients</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/clients/list" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/clients/list') ? 'active' : ''}"
+                    <a href="${pageContext.request.contextPath}/clients" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/clients') ? 'active' : ''}"
                        data-tooltip="Liste des clients">
                         <i class="fas fa-users"></i>
                         <span class="nav-link-text">Tous les clients</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/clients/register" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/clients/register') ? 'active' : ''}"
+                    <a href="${pageContext.request.contextPath}/clients/create" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/clients/create') ? 'active' : ''}"
                        data-tooltip="Nouveau client">
                         <i class="fas fa-user-plus"></i>
                         <span class="nav-link-text">Nouveau client</span>
