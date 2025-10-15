@@ -1,11 +1,64 @@
+#!/bin/bash
+
+# Création du répertoire lib et copie du servlet-api.jar
+mkdir -p lib
+
+projectName="compte-pret-app"
+
+# Création des répertoires Java et WEB-INF
+javaPath="src/main/java"
+mkdir -p "$javaPath"
+
+# Création des dossiers MVC dans src/main/java
+controllerPath="src/main/java/com/compte_pret/controller"
+entityPath="src/main/java/com/compte_pret/entity"
+servicePath="src/main/java/com/compte_pret/service"
+repositoryPath="src/main/java/com/compte_pret/repository"
+
+mkdir -p "$controllerPath"
+mkdir -p "$entityPath"
+mkdir -p "$servicePath"
+mkdir -p "$repositoryPath"
+
+ressourcesPath="src/main/ressources"
+mkdir -p "$ressourcesPath"
+
+
+webInfPath="src/main/webapp/WEB-INF"
+mkdir -p "$webInfPath"
+
+# Création du fichier web.xml
+xmlPath="src/main/webapp/WEB-INF/web.xml"
+
+
+cat > "$xmlPath" << 'EOF'
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns="https://jakarta.ee/xml/ns/jakartaee"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="https://jakarta.ee/xml/ns/jakartaee 
+         https://jakarta.ee/xml/ns/jakartaee/web-app_6_0.xsd" 
+         version="6.0">
+    
+    <display-name>Banking Compte Pret Service</display-name>
+    
+</web-app>
+
+EOF
+
+echo "Fichier XML créé : $xmlPath"
+
+# Création du fichier pom.xml
+pomPath="pom.xml"
+
+cat > "$pomPath" << 'EOF'
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
     xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 
     http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>com.compte_courant</groupId>
-    <artifactId>compte-courant-app</artifactId>
+    <groupId>com.comptePret</groupId>
+    <artifactId>compte-pret-app</artifactId>
     <version>1.0</version>
     <packaging>war</packaging>
 
@@ -18,7 +71,7 @@
 
 
     <build>
-        <finalName>compte-courant-app</finalName>
+        <finalName>compte-pret-app</finalName>
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -45,7 +98,7 @@
         </plugins>
     </build>
 
-    <dependencies>
+        <dependencies>
         <!-- Jakarta EE API - fourni par WildFly/JBoss -->
         <dependency>
             <groupId>jakarta.platform</groupId>
@@ -53,13 +106,12 @@
             <version>9.1.0</version>
             <scope>provided</scope>
         </dependency>
-        <dependency>
-          <groupId>com.banking</groupId>
-          <artifactId>banking-shared</artifactId>
-          <version>1.0</version>
-        </dependency>
     </dependencies>
 
 
 </project>
 
+EOF
+
+echo "Fichier POM créé : $pomPath"
+read -p "Appuyez sur une touche pour continuer..."

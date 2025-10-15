@@ -936,8 +936,8 @@
             <div class="nav-section">
                 <div class="nav-section-title">Comptes Courants</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/liste" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/liste') ? 'active' : ''}"
+                    <a href="${pageContext.request.contextPath}/compte-courant/list" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/list') ? 'active' : ''}"
                        data-tooltip="Liste des comptes">
                         <i class="fas fa-credit-card"></i>
                         <span class="nav-link-text">Tous les comptes</span>
@@ -947,19 +947,11 @@
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/creer" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/creer') ? 'active' : ''}"
+                    <a href="${pageContext.request.contextPath}/compte-courant/create" 
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/create') ? 'active' : ''}"
                        data-tooltip="Nouveau compte">
                         <i class="fas fa-plus-circle"></i>
                         <span class="nav-link-text">Nouveau compte</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/transaction" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/transaction') ? 'active' : ''}"
-                       data-tooltip="Nouvelle transaction">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span class="nav-link-text">Transaction</span>
                     </a>
                 </div>
             </div>
