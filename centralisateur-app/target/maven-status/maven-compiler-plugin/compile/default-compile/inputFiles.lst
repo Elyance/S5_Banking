@@ -18,3 +18,5 @@
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/AdminController.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/service/ClientService.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/CompteCourantController.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/CompteDepotController.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/service/CompteDepotService.java

@@ -1,3 +1,9 @@
 centralisateur-app/target/
 compte-courant-app/target/
 compte-pret-app/target/
+compte-depot-app/bin/
+compte-depot-app/obj/
+compte-depot-app/Migrations/*Designer.cs
+compte-depot-app/TestResults/
+compte-depot-app/*.log
+compte-depot-app/appsettings.Development.json
