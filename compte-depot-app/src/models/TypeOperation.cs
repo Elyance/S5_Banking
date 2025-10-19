@@ -17,7 +17,5 @@ namespace CompteDepotService.Models
         [MaxLength(50)]
         [Column("libelle")]
         public string Libelle { get; set; }
-
-        public ICollection<Transaction> Transactions { get; set; }
     }
 }

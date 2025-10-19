@@ -29,6 +29,7 @@
                 <td>${item.compte.statutLibelle}</td>
                 <td>
                     <a href="${pageContext.request.contextPath}/compte-courant/transaction?compteId=${item.compte.id}" class="btn btn-primary btn-sm">Faire une transaction</a>
+                    <a href="${pageContext.request.contextPath}/compte-courant/transactions/list?compteId=${item.compte.id}" class="btn btn-outline-secondary btn-sm ms-1">Voir transactions</a>
                 </td>
             </tr>
         </c:forEach>

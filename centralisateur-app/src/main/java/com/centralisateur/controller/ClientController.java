@@ -1,6 +1,7 @@
 package com.centralisateur.controller;
 
 import com.centralisateur.service.ClientService;
+import com.centralisateur.service.CompteCourantService;
 import com.centralisateur.entity.*;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -9,37 +10,71 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.time.LocalDate;
+import java.time.*;
 
-@WebServlet({"/clients", "/clients/create", "/clients/details", "/clients/edit", "/clients/delete"})
+import com.compte_courant.dto.CompteCourantWithStatusDTO;
+import java.util.List;
+
+@WebServlet({"/clients", "/clients/create", "/clients/details", "/clients/edit", "/clients/delete", "/clients/situation"})
 public class ClientController extends HttpServlet {
+    private final CompteCourantService compteCourantService = new CompteCourantService();
 
 	@Inject
 	private ClientService clientService;
+
+
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String servletPath = req.getServletPath();
     if ("/clients/create".equals(servletPath)) {
             req.setAttribute("contentPage", "/views/clients/create.jsp");
+            
             req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
         } else if ("/clients/details".equals(servletPath)) {
             String id = req.getParameter("id");
             if (id != null) {
-                var client = clientService.findClientById(Long.parseLong(id));
+                var client = clientService.findClientWithCurrentStatusById(Long.parseLong(id));
                 req.setAttribute("client", client);
             }
             req.setAttribute("contentPage", "/views/clients/details.jsp");
             req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
+        } else if ("/clients/situation".equals(servletPath)) {
+            String id = req.getParameter("id");
+            if (id != null) {
+                var client = clientService.findClientWithCurrentStatusById(Long.parseLong(id));
+                req.setAttribute("client", client);
+                // Set page title and (optional) financial data placeholders
+                req.setAttribute("pageTitle", "Situation de " + client.getPrenom() + " " + client.getNom());
+                
+                // Convertir LocalDate/LocalDateTime en Date pour la compatibilité avec fmt:formatDate
+                if (client.getDateCreation() != null) {
+                    req.setAttribute("dateCreationFormatted", java.sql.Timestamp.valueOf(client.getDateCreation()));
+                }
+                if (client.getDateNaissance() != null) {
+                    req.setAttribute("dateNaissanceFormatted", java.sql.Date.valueOf(client.getDateNaissance()));
+                }
+                
+                // If you compute total balance elsewhere, set attribute name 'totalBalance'
+                // req.setAttribute("totalBalance", soldeTotal);
+                List<CompteCourantWithStatusDTO> comptesCourantDuClient = compteCourantService.getComptesByClientId(client.getId());
+                req.setAttribute("comptesCourant", comptesCourantDuClient);
+                // TODO: Ajouter les données des comptes et soldes ici
+                // req.setAttribute("comptes", comptesDuClient);
+                // req.setAttribute("soldeTotal", soldeTotal);
+            }
+            req.setAttribute("contentPage", "/views/clients/situation.jsp");
+            req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
         } else if ("/clients/edit".equals(servletPath)) {
             String id = req.getParameter("id");
             if (id != null) {
-                var client = clientService.findClientById(Long.parseLong(id));
+                var client = clientService.findClientWithCurrentStatusById(Long.parseLong(id));
                 req.setAttribute("client", client);
             }
             req.setAttribute("contentPage", "/views/clients/edit.jsp");
             req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
-        } else {
+            
+        }else {
             var clients = clientService.getClientsWithCurrentStatus();
             req.setAttribute("clients", clients);
             req.setAttribute("contentPage", "/views/clients/list.jsp");
@@ -61,6 +96,8 @@ public class ClientController extends HttpServlet {
                 String telephone = req.getParameter("telephone");
                 String adresse = req.getParameter("adresse");
                 String profession = req.getParameter("profession");
+                String dateCreationStr = req.getParameter("dateCreation");
+                LocalDateTime dateCreation = LocalDateTime.parse(dateCreationStr);
 
 
                 // Générer le numéro client
@@ -77,7 +114,7 @@ public class ClientController extends HttpServlet {
                 client.setTelephone(telephone);
                 client.setAdresse(adresse);
                 client.setProfession(profession);
-                client.setDateCreation(java.time.LocalDateTime.now());
+                client.setDateCreation(dateCreation);
 
                 // Enregistrer le client
                 clientService.saveClient(client);

@@ -44,3 +44,6 @@ VALUES ('SuperAdmin', '123 Avenue Banque', '0123456789', 'admin@banque.com', 'mo
 INSERT INTO statut_client (libelle) VALUES ('ACTIF');
 INSERT INTO statut_client (libelle) VALUES ('BLOQUE');
 INSERT INTO statut_client (libelle) VALUES ('INACTIF');
+
+
+

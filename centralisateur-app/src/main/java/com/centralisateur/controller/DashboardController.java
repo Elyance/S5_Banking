@@ -13,7 +13,7 @@ public class DashboardController extends HttpServlet {
 	@Override
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// On définit le chemin du contenu à inclure dans le layout
-		request.setAttribute("contentPage", "/bienvenue.html");
+		request.setAttribute("contentPage", "/bienvenue.jsp");
 		// On forward vers le layout.jsp qui inclura le contenu
 		request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
 	}

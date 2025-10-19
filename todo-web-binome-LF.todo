@@ -1,0 +1,35 @@
+PROPOSITION DE TECHNIQUE POUR LE PROJET DE VULGARISATION DES LOI DE FINANCE A MADAGASCAR
+Redige par : Elyance RAHANTAMALALA
+Date : 18 octobre 2025
+
+1. Contexte et analyse des besoin du client
+    a. Besoins principaux:
+        -> avoir un site web qui:
+          . aidera les gens a comprendre comment l'argent public est collecte et depense 
+          . facile a lire et fonctionnelle 
+    b. Objectif metier:
+        -> une transparence budgetaire
+        -> une prise de responsabilite de la citoyennete 
+        -> suivi de pres des actes de corruption
+    c. Public cible:
+        -> les citoyens Malagasy
+    d. Contraintes identifies:
+        -> une application simple pas trop de details
+2. Proposition d'architecture et de technologie
+    A. BACKEND ET BASE DE DONNEES
+        Base de donnees:
+            -> PostgresSQL parce que c'est robuste et c'est ce qu'on a jusqu'ici aussi
+            -> Justification: Postgres exelle dans les gestions de jointure et les contraintes qui coincide aux demandes car les histoires de budgetisation ont besoin de donnees strictes, vrai et exacte
+        Serveur
+            -> Spring MVC car on est habitue a ca et JAVA est l'une des languages qui rapporte le plus
+            -> Justification : paske on travaille avec ce language actuellement dans d'autre projet et on est deja plutot used to it
+    B.FRONTEND
+        Framework: 
+            -> JSP,CSS,JS
+            -> JS est parfait pour la gestion de ce projet pour rendre le site interactif
+            -> CSS suffit pour le rendre beau 
+            -> JSP va bien avec JAVA
+        Stylisation CSS
+            -> si c okey pour la decouverte de nouvelle technique: Sass, Tailwind
+            -> sinon CSS pur et Bootstrap
+            -> Justification: Bootstrap est tres facile a utiliser et suffit pour la stylisation        

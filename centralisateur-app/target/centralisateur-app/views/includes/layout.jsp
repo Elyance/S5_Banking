@@ -570,6 +570,56 @@
             border-radius: var(--radius-lg) var(--radius-lg) 0 0;
         }
 
+        /* Ensure colored card headers keep strong contrast (override default light gradient) */
+        .card-header.bg-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            color: #ffffff !important;
+            border-bottom-color: rgba(37, 99, 235, 0.35);
+        }
+
+        .card-header.bg-warning {
+            background: linear-gradient(135deg, var(--warning-color), #f59e0b);
+            color: #000000 !important;
+            border-bottom-color: rgba(251, 191, 36, 0.35);
+        }
+
+        .card-header.bg-info {
+            background: linear-gradient(135deg, #60a5fa, #2563eb);
+            color: #ffffff !important;
+            border-bottom-color: rgba(96, 165, 250, 0.35);
+        }
+
+        .card-header.bg-success {
+            background: linear-gradient(135deg, var(--accent-color), #059669);
+            color: #ffffff !important;
+            border-bottom-color: rgba(6, 214, 160, 0.35);
+        }
+
+        /* Make colored borders match header for account cards */
+        .card.border-primary {
+            border-color: rgba(37, 99, 235, 0.45) !important;
+        }
+
+        .card.border-warning {
+            border-color: rgba(251, 191, 36, 0.45) !important;
+        }
+
+        .card.border-info {
+            border-color: rgba(96, 165, 250, 0.45) !important;
+        }
+
+        /* Ensure badge backgrounds inside colored headers are readable */
+        .card-header .badge.bg-light {
+            background: rgba(255,255,255,0.92) !important;
+            color: inherit !important;
+            border: 1px solid rgba(0,0,0,0.06);
+        }
+
+        /* Small tweak: make header icons slightly more visible on light backgrounds */
+        .card-header i {
+            opacity: 0.95;
+        }
+
         .card-title {
             margin: 0;
             font-weight: 700;
@@ -882,185 +932,113 @@
         
         <!-- Navigation -->
         <div class="sidebar-nav">
-            <!-- Tableau de bord -->
+            <!-- Principal -->
             <div class="nav-section">
-                <div class="nav-section-title">Tableau de bord</div>
+                <div class="nav-section-title">Principal</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/" 
+                    <a href="${pageContext.request.contextPath}/"
                        class="nav-link ${pageContext.request.requestURI.endsWith('/') ? 'active' : ''}"
                        data-tooltip="Dashboard">
                         <i class="fas fa-tachometer-alt"></i>
                         <span class="nav-link-text">Dashboard</span>
                     </a>
                 </div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/rapports" 
-                       class="nav-link"
-                       data-tooltip="Rapports">
-                        <i class="fas fa-chart-line"></i>
-                        <span class="nav-link-text">Rapports</span>
-                    </a>
-                </div>
             </div>
-            
-            <!-- Gestion des clients -->
+
+            <!-- Clients -->
             <div class="nav-section">
                 <div class="nav-section-title">Clients</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/clients" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/clients') ? 'active' : ''}"
-                       data-tooltip="Liste des clients">
+                    <a href="${pageContext.request.contextPath}/clients"
+                       class="nav-link ${pageContext.request.requestURI.contains('/clients') && !pageContext.request.requestURI.contains('/create') ? 'active' : ''}"
+                       data-tooltip="Gestion clients">
                         <i class="fas fa-users"></i>
                         <span class="nav-link-text">Tous les clients</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/clients/create" 
+                    <a href="${pageContext.request.contextPath}/clients/create"
                        class="nav-link ${pageContext.request.requestURI.contains('/clients/create') ? 'active' : ''}"
                        data-tooltip="Nouveau client">
                         <i class="fas fa-user-plus"></i>
                         <span class="nav-link-text">Nouveau client</span>
                     </a>
                 </div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/clients/recherche" 
-                       class="nav-link"
-                       data-tooltip="Rechercher">
-                        <i class="fas fa-search"></i>
-                        <span class="nav-link-text">Rechercher</span>
-                    </a>
-                </div>
             </div>
-            
-            <!-- Comptes Courants -->
+
+            <!-- Comptes -->
             <div class="nav-section">
-                <div class="nav-section-title">Comptes Courants</div>
+                <div class="nav-section-title">Comptes</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/list" 
+                    <a href="${pageContext.request.contextPath}/compte-courant/list"
                        class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/list') ? 'active' : ''}"
-                       data-tooltip="Liste des comptes">
+                       data-tooltip="Comptes courants">
                         <i class="fas fa-credit-card"></i>
-                        <span class="nav-link-text">Tous les comptes</span>
+                        <span class="nav-link-text">Comptes Courants</span>
                         <c:if test="${nombreComptesCourants != null && nombreComptesCourants > 0}">
                             <span class="nav-badge">${nombreComptesCourants}</span>
                         </c:if>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/create" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/create') ? 'active' : ''}"
-                       data-tooltip="Nouveau compte">
-                        <i class="fas fa-plus-circle"></i>
-                        <span class="nav-link-text">Nouveau compte</span>
-                    </a>
-                </div>
-            </div>
-
-            <!-- Comptes Prêt -->
-            <div class="nav-section">
-                <div class="nav-section-title">Comptes Prêt</div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-pret/list" 
+                    <a href="${pageContext.request.contextPath}/compte-pret/list"
                        class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/list') ? 'active' : ''}"
-                       data-tooltip="Liste des prêts">
+                       data-tooltip="Comptes prêts">
                         <i class="fas fa-hand-holding-usd"></i>
-                        <span class="nav-link-text">Tous les comptes prêts</span>
+                        <span class="nav-link-text">Comptes Prêts</span>
                         <c:if test="${nombreComptesPret != null && nombreComptesPret > 0}">
                             <span class="nav-badge">${nombreComptesPret}</span>
                         </c:if>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-pret/taux-interet" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/taux-interet') ? 'active' : ''}"
-                       data-tooltip="Nouveau taux d'interet">
-                        <i class="fas fa-hand-holding-usd"></i>
-                        <span class="nav-link-text">Taux d'interet</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-pret/create" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/create') ? 'active' : ''}"
-                       data-tooltip="Nouveau prêt">
-                        <i class="fas fa-plus-circle"></i>
-                        <span class="nav-link-text">Nouveau compte prêt</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-pret/transaction" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/transaction') ? 'active' : ''}"
-                       data-tooltip="Nouvelle transaction">
-                        <i class="fas fa-exchange-alt"></i>
-                        <span class="nav-link-text">Transaction</span>
+                    <a href="${pageContext.request.contextPath}/compte-depot/list"
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-depot/list') ? 'active' : ''}"
+                       data-tooltip="Comptes dépôts">
+                        <i class="fas fa-piggy-bank"></i>
+                        <span class="nav-link-text">Comptes Dépôts</span>
                     </a>
                 </div>
             </div>
 
-                       data-tooltip="Liste des comptes">
-                        <i class="fas fa-credit-card"></i>
-                        <span class="nav-link-text">Tous les comptes</span>
-                        <c:if test="${nombreComptesCourants != null && nombreComptesCourants > 0}">
-                            <span class="nav-badge">${nombreComptesCourants}</span>
-                        </c:if>
-                    </a>
-                </div>
+            <!-- Operation -->
+            <div class="nav-section">
+                <div class="nav-section-title">Operations</div>
                 <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/creer" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/creer') ? 'active' : ''}"
-                       data-tooltip="Nouveau compte">
-                        <i class="fas fa-plus-circle"></i>
-                        <span class="nav-link-text">Nouveau compte</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/compte-courant/transaction" 
-                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/transaction') ? 'active' : ''}"
-                       data-tooltip="Nouvelle transaction">
+                    <a href="${pageContext.request.contextPath}/compte-courant/decouvert"
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-courant/decouvert') ? 'active' : ''}"
+                       data-tooltip="Découvert Autorisé">
                         <i class="fas fa-exchange-alt"></i>
-                        <span class="nav-link-text">Transaction</span>
+                        <span class="nav-link-text">Découvert Autorisé</span>
+                    </a>
+                </div>
+                <div class="nav-item">
+                    <a href="${pageContext.request.contextPath}/compte-pret/taux-interet"
+                       class="nav-link ${pageContext.request.requestURI.contains('/compte-pret/taux-interet') ? 'active' : ''}"
+                       data-tooltip="Taux d'intérêt">
+                        <i class="fas fa-percent"></i>
+                        <span class="nav-link-text">Taux d'Intérêt</span>
                     </a>
                 </div>
             </div>
-            
-            
-            
-            <!-- Comptes de Dépôt (à venir) -->
+
+            <!-- Administration -->
             <div class="nav-section">
-                <div class="nav-section-title">Épargne <small class="text-warning">(Bientôt)</small></div>
+                <div class="nav-section-title">Administration</div>
                 <div class="nav-item">
-                    <a href="#" class="nav-link text-muted" style="opacity: 0.5; cursor: not-allowed;"
-                       data-tooltip="Bientôt disponible">
-                        <i class="fas fa-piggy-bank"></i>
-                        <span class="nav-link-text">Mes épargnes</span>
-                        <span class="nav-badge bg-warning">0</span>
+                    <a href="${pageContext.request.contextPath}/rapports"
+                       class="nav-link ${pageContext.request.requestURI.contains('/rapports') ? 'active' : ''}"
+                       data-tooltip="Rapports">
+                        <i class="fas fa-chart-line"></i>
+                        <span class="nav-link-text">Rapports</span>
                     </a>
                 </div>
                 <div class="nav-item">
-                    <a href="#" class="nav-link text-muted" style="opacity: 0.5; cursor: not-allowed;"
-                       data-tooltip="Bientôt disponible">
-                        <i class="fas fa-chart-pie"></i>
-                        <span class="nav-link-text">Rendements</span>
-                    </a>
-                </div>
-            </div>
-            
-            <!-- Outils -->
-            <div class="nav-section">
-                <div class="nav-section-title">Outils</div>
-                <div class="nav-item">
-                    <a href="${pageContext.request.contextPath}/api-docs" 
-                       class="nav-link"
-                       data-tooltip="Documentation API">
+                    <a href="${pageContext.request.contextPath}/api-docs"
+                       class="nav-link ${pageContext.request.requestURI.contains('/api-docs') ? 'active' : ''}"
+                       data-tooltip="API">
                         <i class="fas fa-code"></i>
-                        <span class="nav-link-text">API Docs</span>
-                    </a>
-                </div>
-                <div class="nav-item">
-                    <a href="#" onclick="window.print(); return false;" 
-                       class="nav-link"
-                       data-tooltip="Imprimer">
-                        <i class="fas fa-print"></i>
-                        <span class="nav-link-text">Imprimer</span>
+                        <span class="nav-link-text">API</span>
                     </a>
                 </div>
             </div>

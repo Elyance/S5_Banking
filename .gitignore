@@ -1,6 +1,7 @@
 centralisateur-app/target/
 compte-courant-app/target/
 compte-pret-app/target/
+banking-shared/target/
 compte-depot-app/bin/
 compte-depot-app/obj/
 compte-depot-app/Migrations/*Designer.cs

@@ -28,6 +28,10 @@ public class ClientService {
         return clientRepository.findAllClientsWithCurrentStatus();
     }
 
+    public ClientWithStatusDTO findClientWithCurrentStatusById(Long id) {
+        return clientRepository.findClientWithCurrentStatusById(id);
+    }
+
     @Transactional
     public void saveClient(Client client) {
         // Enregistrer le client

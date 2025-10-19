@@ -38,6 +38,12 @@ CREATE TABLE IF NOT EXISTS transactions (
     date_transaction TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE IF NOT EXISTS historique_devouvert_autorise (
+    id BIGSERIAL PRIMARY KEY,
+    value DECIMAL(15,2) NOT NULL,
+    date_modification TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 INSERT INTO statut_compte (libelle) VALUES 
 ('ACTIF'),
 ('SUSPENDU'),
@@ -51,3 +57,10 @@ INSERT INTO statut_compte (libelle) VALUES
 INSERT INTO type_operation (libelle) VALUES 
 ('DEPOT'),
 ('RETRAIT');
+
+ALTER TABLE compte_courant
+ADD COLUMN decouvert_autorise DECIMAL(15,2) DEFAULT 0.00;
+
+INSERT INTO historique_devouvert_autorise (value, date_modification) VALUES 
+(50000.00, '2024-01-01 00:00:00'),
+(100000.00, '2024-06-01 00:00:00');

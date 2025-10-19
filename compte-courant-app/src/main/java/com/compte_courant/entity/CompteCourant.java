@@ -20,11 +20,13 @@ public class CompteCourant {
     @Column(nullable = false, precision = 15, scale = 2)
     private BigDecimal solde = BigDecimal.ZERO;
 
-    @Column(name = "decouvert_autorise", precision = 15, scale = 2)
-    private BigDecimal decouvertAutorise = BigDecimal.ZERO;
-
     @Column(name = "date_creation")
     private LocalDateTime dateCreation;
+
+    @Column(name = "decouvert_autorise", nullable = false, precision = 15, scale = 2)
+    private BigDecimal decouvertAutorise = BigDecimal.ZERO;
+
+    public CompteCourant() {}
 
     // Getters and setters
     public Long getId() { return id; }
