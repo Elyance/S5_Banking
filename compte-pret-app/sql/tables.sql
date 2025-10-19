@@ -1,6 +1,7 @@
 CREATE DATABASE compte_pret_db;
 \c compte_pret_db;
 
+
 CREATE TABLE taux_interet (
     id BIGSERIAL PRIMARY KEY,
     valeur DECIMAL(5,2) NOT NULL CHECK (valeur >= 0),

@@ -34,7 +34,7 @@ public class CompteDepotService {
     ClientRepository clientRepository;
 
     public boolean creerCompteDepot(String jsonCompteDepot) throws Exception {
-        URL url = new URL("http://localhost:5125/api/CompteDepot");
+        URL url = new URL("http://localhost:5126/api/CompteDepot");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
@@ -69,7 +69,7 @@ public class CompteDepotService {
     }
 
     public boolean deposerSurCompteDepot(String jsonDepot) throws Exception {
-        URL url = new URL("http://localhost:5125/api/CompteDepot/depot");
+        URL url = new URL("http://localhost:5126/api/CompteDepot/depot");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("POST");
         con.setRequestProperty("Content-Type", "application/json");
@@ -100,7 +100,7 @@ public class CompteDepotService {
     }
 
     public String listerTypeOperation() throws Exception {
-        URL url = new URL("http://localhost:5125/api/TypeOperation");
+        URL url = new URL("http://localhost:5126/api/TypeOperation");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Accept", "application/json");
@@ -128,7 +128,7 @@ public class CompteDepotService {
     }
 
     public String listerComptesDepot() throws Exception {
-        URL url = new URL("http://localhost:5125/api/CompteDepot/list");
+        URL url = new URL("http://localhost:5126/api/CompteDepot/list");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Accept", "application/json");
@@ -274,16 +274,16 @@ public class CompteDepotService {
         return result;
     }
 
-    public boolean createTauxInteret(Long valeur) {
+    public boolean createTauxInteret(Long valeur, String dateDebut) {
         try {
-            URL url = new URL("http://localhost:5125/api/CompteDepot/taux");
+            URL url = new URL("http://localhost:5126/api/CompteDepot/taux");
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("POST");
             con.setRequestProperty("Content-Type", "application/json");
             con.setDoOutput(true);
 
-            // Build JSON body. If valeur is null, let server set default or reject.
-            String body = String.format("{\"valeur\": %s}", valeur == null ? "null" : valeur.toString());
+            // Build JSON body with valeur and dateDebut
+            String body = String.format("{\"valeur\": %s, \"dateDebut\": \"%s\"}", valeur == null ? "null" : valeur.toString(), dateDebut);
 
             try (OutputStream os = con.getOutputStream()) {
                 byte[] input = body.getBytes("utf-8");

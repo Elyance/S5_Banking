@@ -23,7 +23,7 @@
             <i class="fas fa-users"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value">${clients != null ? clients.size() : 0}</div>
+            <div class="stat-value">${ nbClient != null ? nbClient : 0}</div>
             <div class="stat-label">Total Clients</div>
         </div>
     </div>
@@ -32,7 +32,7 @@
             <i class="fas fa-credit-card"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value">${nombreComptesCourants != null ? nombreComptesCourants : 0}</div>
+            <div class="stat-value">${nbCompteCourant != null ? nbCompteCourant : 0}</div>
             <div class="stat-label">Comptes Courants</div>
         </div>
     </div>
@@ -41,7 +41,7 @@
             <i class="fas fa-hand-holding-usd"></i>
         </div>
         <div class="stat-content">
-            <div class="stat-value">${nombreComptesPret != null ? nombreComptesPret : 0}</div>
+            <div class="stat-value">${nbComptePret != null ? nbComptePret : 0}</div>
             <div class="stat-label">Comptes Prêt</div>
         </div>
     </div>

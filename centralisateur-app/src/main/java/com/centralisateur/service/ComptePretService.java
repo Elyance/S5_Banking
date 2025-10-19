@@ -5,6 +5,9 @@ import javax.naming.NamingException;
 
 import com.compte_pret.remote.ComptePretServiceRemote;
 import com.compte_pret.dto.ComptePretWithStatusDTO;
+import com.compte_pret.dto.ContratPretDTO;
+import com.compte_pret.dto.EcheanceDTO;
+import com.compte_pret.dto.EcheanceDTO;
 import java.util.*;
 
 
@@ -45,5 +48,25 @@ public class ComptePretService {
 
     public Map<Long, String> listerTypesPaiement() {
         return getRemote().listerTypesPaiement();
+    }
+
+    public List<ComptePretWithStatusDTO> findComptesByClientId(Long clientId) {
+        return getRemote().findComptesByClientId(clientId);
+    }
+
+    public BigDecimal findTauxInteretByDate(LocalDateTime date) {
+        return getRemote().findTauxInteretByDate(date);
+    }
+
+    public List<ContratPretDTO> findContratsByComptePretId(Long comptePretId) {
+        return getRemote().findContratsByComptePretId(comptePretId);
+    }
+
+    public List<EcheanceDTO> findEcheancesByContratId(Long contratId) {
+        return getRemote().findEcheancesByContratId(contratId);
+    }
+
+    public void payerEcheance(Long echeanceId) {
+        getRemote().payerEcheance(echeanceId);
     }
 }

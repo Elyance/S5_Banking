@@ -72,10 +72,10 @@
                         <div class="card bg-light">
                             <div class="card-body text-center">
                                 <c:choose>
-                                    <c:when test="${not empty totalBalance}">
+                                    <c:when test="${not empty resumeFinancier}">
                                         <div class="display-4 text-success fw-bold mb-2">
                                             <i class="fas fa-euro-sign me-2"></i>
-                                            <fmt:formatNumber value="${totalBalance}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                            <fmt:formatNumber value="${resumeFinancier}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
                                         </div>
                                     </c:when>
                                     <c:otherwise>
@@ -85,7 +85,7 @@
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
-                                <div class="text-muted">Solde total dans la banque</div>
+                                <div class="text-muted">Situation financière (Courant - Prêt)</div>
                             </div>
                         </div>
                     </div>
@@ -172,55 +172,66 @@
                 <div class="row mb-4">
                     <div class="col-12">
                         <div class="d-flex overflow-x-auto pb-2">
-                            <!-- Exemple de compte prêt -->
-                            <div class="card border-warning h-100 me-3" style="min-width: 300px;">
-                                <div class="card-header bg-warning text-dark">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-hand-holding-usd me-2"></i>
-                                            Compte Prêt
-                                        </h6>
-                                        <span class="badge bg-light text-warning">En cours</span>
+                            <c:forEach var="comptePret" items="${comptesPret}">
+                                <div class="card border-warning h-100 me-3" style="min-width: 300px;">
+                                    <div class="card-header bg-warning text-dark">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-hand-holding-usd me-2"></i>
+                                                Compte Prêt
+                                            </h6>
+                                            <span class="badge bg-light text-warning">${comptePret.statutLibelle}</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Numéro de prêt</small>
+                                                <div class="fw-bold">${comptePret.numeroCompte}</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Montant restant</small>
+                                                <div class="fw-bold text-warning fs-5">
+                                                    <fmt:formatNumber value="${comptePret.soldeRestantDu}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Taux d'interet</small>
+                                                <div class="fw-bold">
+                                                    ${comptePret.tauxInteret} % par an
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Date d'ouverture</small>
+                                                <div class="fw-bold">
+                                                    ${comptePret.dateCreationFormatted}
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="btn-group w-100">
+                                            <a href="${pageContext.request.contextPath}/compte-pret/transaction?compteId=${comptePret.id}"
+                                               class="btn btn-outline-warning btn-sm">
+                                                <i class="fas fa-exchange-alt me-1"></i>
+                                                Transaction
+                                            </a>
+                                            <a href="${pageContext.request.contextPath}/compte-pret/contrats?compteId=${comptePret.id}"
+                                               class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-eye me-1"></i>
+                                                Détails
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <small class="text-muted">Numéro de prêt</small>
-                                            <div class="fw-bold">PR00123456</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Montant restant</small>
-                                            <div class="fw-bold text-warning fs-5">-15,000.00 €</div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <small class="text-muted">Taux d'intérêt</small>
-                                            <div class="fw-bold">4.5%</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Mensualités</small>
-                                            <div class="fw-bold">450.00 €</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="btn-group w-100">
-                                        <a href="${pageContext.request.contextPath}/compte-pret/transaction?compteId=2"
-                                           class="btn btn-outline-warning btn-sm">
-                                            <i class="fas fa-exchange-alt me-1"></i>
-                                            Transaction
-                                        </a>
-                                        <a href="${pageContext.request.contextPath}/compte-pret/list"
-                                           class="btn btn-outline-info btn-sm">
-                                            <i class="fas fa-eye me-1"></i>
-                                            Détails
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            </c:forEach>
+
+                            <c:if test="${empty comptesPret}">
+                                <div class="text-muted p-3">Aucun compte prêt trouvé pour ce client.</div>
+                            </c:if>
                         </div>
                     </div>
                 </div>

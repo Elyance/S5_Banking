@@ -12,7 +12,7 @@ import java.util.HashMap;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 
-import com.compte_pret.dto.ComptePretWithStatusDTO;
+import com.compte_pret.dto.*;
 import com.compte_pret.entity.*;
 import com.compte_pret.repository.*;
 
@@ -47,6 +47,7 @@ public class ComptePretService implements ComptePretServiceRemote {
 
     @Inject
     private MvtStatutEcheanceRepository mvtStatutEcheanceRepository;
+
 
     // Méthode pour ajouter un nouveau taux d'intérêt
     @Override
@@ -134,7 +135,7 @@ public class ComptePretService implements ComptePretServiceRemote {
 
             MvtStatutEcheance mvtStatutEcheance = new MvtStatutEcheance();
             mvtStatutEcheance.setEcheance(echeance);
-            mvtStatutEcheance.setStatutEcheance(statutEcheanceRepository.findById(1L));
+            mvtStatutEcheance.setStatutEcheance(statutEcheanceRepository.findById(2L));
             mvtStatutEcheance.setDateChangement(LocalDateTime.now());
             mvtStatutEcheanceRepository.save(mvtStatutEcheance);
         }
@@ -144,7 +145,7 @@ public class ComptePretService implements ComptePretServiceRemote {
     public List<Echeance> creationEcheancesAvecPeriodicite(ContratPret contratPret, int periodicite) {
         List<Echeance> echeances = new ArrayList<>();
 
-        TauxInteret tauxInteret = tauxInteretRepository.findLatest();
+        TauxInteret tauxInteret = tauxInteretRepository.findTauxInteretByDate(contratPret.getDateDebut().atStartOfDay());
         if (tauxInteret == null) {
             throw new IllegalStateException("Aucun taux d'intérêt disponible.");
         }
@@ -171,4 +172,98 @@ public class ComptePretService implements ComptePretServiceRemote {
         return echeances;
     }
 
+    @Override
+    public List<ComptePretWithStatusDTO> findComptesByClientId(Long clientId) {
+        List<ComptePretWithStatusDTO> comptes = new ArrayList<>();
+        for (ComptePretWithStatusDTO compte : comptePretRepository.findByClientId(clientId)) {
+            compte.setTauxInteret(findTauxInteretByDate(compte.getDateCreation()));
+            comptes.add(compte);
+        }
+        return comptes;
+    }
+
+    @Override
+    public BigDecimal findTauxInteretByDate(LocalDateTime date) {
+        TauxInteret tauxInteret = tauxInteretRepository.findTauxInteretByDate(date);
+        return tauxInteret != null ? tauxInteret.getValeur() : BigDecimal.ZERO;
+    }
+
+    @Override
+    public List<ContratPretDTO> findContratsByComptePretId(Long comptePretId) {
+        List<ContratPretDTO> contratsDTO = new ArrayList<>();
+        List<ContratPretDTO> contrats = contratPretRepository.findByComptePretId(comptePretId);
+        for (ContratPretDTO contrat : contrats) {
+            // Set tauxInteret
+            LocalDateTime dateDebut = LocalDate.parse(contrat.getDateDebutContrat()).atStartOfDay();
+            contrat.setTauxInteret(findTauxInteretByDate(dateDebut));
+
+            // Get mensualite from first echeance of the contrat
+            List<Echeance> echeances = echeanceRepository.findByContratPretId(contrat.getId());
+            if (!echeances.isEmpty()) {
+                Echeance firstEcheance = echeances.get(0);
+                BigDecimal mensualite = firstEcheance.getMontantCapital().add(firstEcheance.getMontantInteret());
+                contrat.setMensualite(mensualite);
+
+                // montantTotalArembourser = mensualite * nbEcheances
+                contrat.setMontantTotalArembourser(mensualite.multiply(BigDecimal.valueOf(echeances.size())));
+
+                // montantRembourse : sum of paid echeances
+                BigDecimal montantRembourse = BigDecimal.ZERO;
+                for (Echeance e : echeances) {
+                    if (isEcheancePayee(e.getId())) {
+                        montantRembourse = montantRembourse.add(e.getMontantCapital().add(e.getMontantInteret()));
+                    }
+                }
+                contrat.setMontantRembourse(montantRembourse);
+            } else {
+                contrat.setMensualite(BigDecimal.ZERO);
+                contrat.setMontantTotalArembourser(BigDecimal.ZERO);
+                contrat.setMontantRembourse(BigDecimal.ZERO);
+            }
+
+            // Set montantRestantDu = total - rembourse
+            contrat.setMontantRestantDu(contrat.getMontantTotalArembourser().subtract(contrat.getMontantRembourse()));
+
+            contratsDTO.add(contrat);
+        }
+        return contratsDTO;
+    }
+
+    @Override
+    @Transactional
+    public void payerEcheance(Long echeanceId) {
+        Echeance echeance = echeanceRepository.findById(echeanceId);
+        if (echeance == null) {
+            throw new IllegalArgumentException("Échéance non trouvée avec l'ID: " + echeanceId);
+        }
+
+        // Check if already paid
+        if (isEcheancePayee(echeanceId)) {
+            throw new IllegalStateException("Échéance déjà payée");
+        }
+
+        // Update comptePret soldeRestantDu
+        ComptePret comptePret = echeance.getContratPret().getComptePret();
+        BigDecimal montant = echeance.getMontantCapital().add(echeance.getMontantInteret());
+        comptePret.setSoldeRestantDu(comptePret.getSoldeRestantDu().subtract(montant));
+        comptePretRepository.save(comptePret);
+
+        // Create new MvtStatutEcheance with PAYÉ status (id=2)
+        MvtStatutEcheance mvt = new MvtStatutEcheance();
+        mvt.setEcheance(echeance);
+        mvt.setStatutEcheance(statutEcheanceRepository.findById(2L)); // PAYÉ
+        mvt.setDateChangement(LocalDateTime.now());
+        mvtStatutEcheanceRepository.save(mvt);
+    }
+
+    private boolean isEcheancePayee(Long echeanceId) {
+        // Check if the echeance has a 'PAYÉ' status
+        MvtStatutEcheance mvt = mvtStatutEcheanceRepository.findLatestByEcheanceId(echeanceId);
+        return mvt != null && mvt.getStatutEcheance().getId().equals(1L);
+    }
+
+    @Override
+    public List<EcheanceDTO> findEcheancesByContratId(Long contratId) {
+        return echeanceRepository.findEcheancesDTOByContratPretId(contratId);
+    }
 }

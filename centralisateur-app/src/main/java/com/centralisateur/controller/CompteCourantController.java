@@ -94,6 +94,27 @@ public class CompteCourantController extends HttpServlet {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètre compteId manquant");
                 return;
             }
+        } else if ("/compte-courant/preview".equals(req.getServletPath())) {
+            String clientId = req.getParameter("clientId");
+            String dateCreationStr = req.getParameter("dateCreation");
+            if (dateCreationStr != null) {
+                dateCreationStr = dateCreationStr.replace("T", " ");
+            } else {
+                dateCreationStr = LocalDateTime.now().toString().replace("T", " ");
+            }
+            System.out.println("Client ID: " + clientId);
+            System.out.println("Date de création: " + dateCreationStr);
+            Client client = clientService.findClientById(Long.parseLong(clientId));
+            req.setAttribute("client", client);
+            req.setAttribute("dateCreation", dateCreationStr);
+            // Découvert autorisé depuis le service (exemple: 500.00 Ariary)
+            LocalDateTime dateCreation = parseDateTime(dateCreationStr);
+            Long decouvertAutorise = compteCourantService.getDecouvertValueByDate(dateCreation);
+            req.setAttribute("decouvertAutorise", new BigDecimal(decouvertAutorise));
+
+            req.setAttribute("contentPage", "/views/compte_courant/preview.jsp");
+            req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
+            return;
         } else {
             resp.sendError(HttpServletResponse.SC_NOT_FOUND);
             return; 

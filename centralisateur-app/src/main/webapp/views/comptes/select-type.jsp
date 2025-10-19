@@ -24,8 +24,9 @@
             </div>
         </div>
 
-        <form action="${pageContext.request.contextPath}/compte-courant/preview" method="post">
+        <form action="${pageContext.request.contextPath}/comptes/create" method="post">
             <input type="hidden" name="clientId" value="${param.clientId}">
+            <input type="hidden" name="typeCompte" value="">
 
             <!-- Date de création -->
             <div class="card mb-4">
@@ -61,7 +62,7 @@
                             </ul>
                         </div>
                         <div class="card-footer">
-                            <button type="submit" class="btn btn-primary w-100">
+                            <button type="submit" class="btn btn-primary w-100" onclick="this.form.typeCompte.value='compte-courant';">
                                 <i class="fas fa-plus me-2"></i>
                                 Créer un compte courant
                             </button>
@@ -71,33 +72,32 @@
 
             <!-- Compte Prêt -->
             <div class="col-lg-4">
-                <div class="card h-100 border-warning">
-                    <div class="card-header bg-warning text-dark">
-                        <h5 class="mb-0">
-                            <i class="fas fa-hand-holding-usd me-2"></i>
-                            Compte Prêt
-                        </h5>
+                    <div class="card h-100 border-warning">
+                        <div class="card-header bg-warning text-dark">
+                            <h5 class="mb-0">
+                                <i class="fas fa-hand-holding-usd me-2"></i>
+                                Compte Prêt
+                            </h5>
+                        </div>
+                        <div class="card-body">
+                            <p class="card-text">
+                                Un prêt bancaire pour financer vos projets :
+                                immobilier, consommation, travaux, véhicule...
+                            </p>
+                            <ul class="list-unstyled">
+                                <li><i class="fas fa-check text-success me-2"></i>Taux d'intérêt fixe</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Mensualités constantes</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Durée flexible</li>
+                                <li><i class="fas fa-check text-success me-2"></i>Assurance optionnelle</li>
+                            </ul>
+                        </div>
+                        <div class="card-footer">
+                            <button type="submit" class="btn btn-warning w-100" onclick="this.form.action='${pageContext.request.contextPath}/compte-pret/preview'; this.form.typeCompte.value='compte-pret'; setDateForPret();">
+                                <i class="fas fa-plus me-2"></i>
+                                Créer un compte prêt
+                            </button>
+                        </div>
                     </div>
-                    <div class="card-body">
-                        <p class="card-text">
-                            Un prêt bancaire pour financer vos projets :
-                            immobilier, consommation, travaux, véhicule...
-                        </p>
-                        <ul class="list-unstyled">
-                            <li><i class="fas fa-check text-success me-2"></i>Taux d'intérêt fixe</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Mensualités constantes</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Durée flexible</li>
-                            <li><i class="fas fa-check text-success me-2"></i>Assurance optionnelle</li>
-                        </ul>
-                    </div>
-                    <div class="card-footer">
-                        <a href="${pageContext.request.contextPath}/compte-pret/create?clientId=${client.id}"
-                           class="btn btn-warning w-100">
-                            <i class="fas fa-plus me-2"></i>
-                            Créer un prêt
-                        </a>
-                    </div>
-                </div>
             </div>
 
             <!-- Compte Dépôt -->
@@ -168,3 +168,10 @@
         </div>
     </div>
 </div>
+
+<script>
+function setDateForPret() {
+    var dateValue = document.getElementById('dateCreation').value;
+    document.getElementById('dateCreationPret').value = dateValue;
+}
+</script>

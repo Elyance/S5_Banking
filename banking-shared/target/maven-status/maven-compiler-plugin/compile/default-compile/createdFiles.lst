@@ -1,5 +1,7 @@
 com/compte_courant/dto/TransactionDTO.class
 com/compte_courant/dto/CompteCourantWithStatusDTO.class
 com/compte_courant/remote/CompteCourantServiceRemote.class
+com/compte_pret/dto/EcheanceDTO.class
+com/compte_pret/dto/ContratPretDTO.class
 com/compte_pret/remote/ComptePretServiceRemote.class
 com/compte_pret/dto/ComptePretWithStatusDTO.class

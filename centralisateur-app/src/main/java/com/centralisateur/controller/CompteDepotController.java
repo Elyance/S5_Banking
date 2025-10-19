@@ -13,7 +13,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/compte-depot/create", "/compte-depot/depot", "/compte-depot/list", "/compte-depot/taux"})
+@WebServlet(urlPatterns = {"/compte-depot/create", "/compte-depot/depot", "/compte-depot/list", "/compte-depot/taux", "/compte-depot/taux-interet"})
 public class CompteDepotController extends HttpServlet {
     @Inject
     private ClientService clientService;
@@ -51,10 +51,18 @@ public class CompteDepotController extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String uri = req.getRequestURI();
-        if (uri.endsWith("/taux")) {
+        if (uri.endsWith("/taux-interet")) {
             String valeurStr = req.getParameter("valeur");
+            String dateDebut = req.getParameter("dateDebut");
             if (valeurStr == null || valeurStr.isEmpty()) {
                 req.setAttribute("error", "La valeur du taux est requise");
+                req.setAttribute("contentPage", "/views/compte_depot/compte_depot_taux_error.jsp");
+                req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
+                return;
+            }
+
+            if (dateDebut == null || dateDebut.isEmpty()) {
+                req.setAttribute("error", "La date de début est requise");
                 req.setAttribute("contentPage", "/views/compte_depot/compte_depot_taux_error.jsp");
                 req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
                 return;
@@ -64,7 +72,7 @@ public class CompteDepotController extends HttpServlet {
                 // parse as decimal but backend expects a long (integer percent), try to convert
                 Double d = Double.parseDouble(valeurStr);
                 Long valeurLong = Math.round(d);
-                boolean success = compteDepotService.createTauxInteret(valeurLong);
+                boolean success = compteDepotService.createTauxInteret(valeurLong, dateDebut);
                 if (success) {
                     req.setAttribute("contentPage", "/views/compte_depot/compte_depot_taux_success.jsp");
                 } else {

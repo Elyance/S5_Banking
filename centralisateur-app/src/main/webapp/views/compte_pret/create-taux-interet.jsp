@@ -1,7 +1,31 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java" %>
+<%@ page contentType="text/html;charsedocument.querySelectorAll('input[name="typeCompte"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const form = document.getElementById('tauxForm');
+        if (this.value === 'pret') {
+            form.action = '${pageContext.request.contextPath}/compte-pret/taux-interet';
+        } else if (this.value === 'depot') {
+            form.action = '${pageContext.request.contextPath}/compte-depot/taux-interet';
+        }
+    });
+});anguage="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <h2>Créer un nouveau taux d'intérêt</h2>
-<form action="${pageContext.request.contextPath}/compte-pret/taux-interet" method="post" class="form">
+<form id="tauxForm" action="${pageContext.request.contextPath}/compte-pret/taux-interet" method="post" class="form">
+    <div class="mb-3">
+        <label class="form-label">Type de compte</label>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="typeCompte" id="pret" value="pret" checked>
+            <label class="form-check-label" for="pret">
+                Prêt
+            </label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="typeCompte" id="depot" value="depot">
+            <label class="form-check-label" for="depot">
+                Dépôt
+            </label>
+        </div>
+    </div>
     <div class="mb-3">
         <label for="valeur" class="form-label">Valeur du taux (%)</label>
         <input type="number" step="0.01" min="0" max="100" name="valeur" id="valeur" class="form-control" required />
@@ -19,3 +43,16 @@
 <c:if test="${not empty successMessage}">
     <div class="alert alert-success mt-3">${successMessage}</div>
 </c:if>
+
+<script>
+document.querySelectorAll('input[name="typeCompte"]').forEach(radio => {
+    radio.addEventListener('change', function() {
+        const form = document.getElementById('tauxForm');
+        if (this.value === 'pret') {
+            form.action = '${pageContext.request.contextPath}/compte-pret/taux-interet';
+        } else if (this.value === 'depot') {
+            form.action = '${pageContext.request.contextPath}/compte-depot/taux-interet'; // Adjust port if needed
+        }
+    });
+});
+</script>

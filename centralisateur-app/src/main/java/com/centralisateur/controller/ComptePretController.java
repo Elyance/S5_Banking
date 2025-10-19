@@ -2,6 +2,9 @@ package com.centralisateur.controller;
 
 import com.centralisateur.service.ComptePretService;
 import com.compte_pret.dto.ComptePretWithStatusDTO;
+import com.compte_pret.dto.ContratPretDTO;
+import com.compte_pret.dto.EcheanceDTO;
+import com.compte_pret.dto.EcheanceDTO;
 import com.centralisateur.service.ClientService;
 import com.centralisateur.dto.ComptePretAvecClient;
 import com.centralisateur.entity.Client;
@@ -49,11 +52,7 @@ public class ComptePretController extends HttpServlet { // Étendre HttpServlet
             request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
         
         } else if (pathInfo != null && pathInfo.equals("/success")) {
-        
-            String successMessage = (String) request.getSession().getAttribute("successMessage");
-            request.getSession().removeAttribute("successMessage");
-            request.setAttribute("successMessage", successMessage);
-            request.setAttribute("contentPage", "/views/compte_pret/create-compte-pret.jsp");
+            request.setAttribute("contentPage", "/views/compte_pret/success.jsp");
             request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
         
         } else if (pathInfo != null && pathInfo.equals("/list")) {
@@ -82,6 +81,71 @@ public class ComptePretController extends HttpServlet { // Étendre HttpServlet
             Map<Long, String> typesPaiement = comptePretService.listerTypesPaiement();
             request.setAttribute("typesPaiement", typesPaiement);
             request.setAttribute("contentPage", "/views/compte_pret/preter.jsp");
+            request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
+
+        } else if (pathInfo != null && pathInfo.equals("/preview")) {
+            String clientIdStr = request.getParameter("clientId");
+            String dateCreationStr = request.getParameter("dateCreation");
+            if (clientIdStr == null || dateCreationStr == null) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètres manquants");
+                return;
+            }
+            Long clientId = Long.parseLong(clientIdStr);
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+            LocalDateTime dateCreation = LocalDateTime.parse(dateCreationStr, formatter);
+            
+            Client client = clientService.findClientById(clientId);
+            if (client == null) {
+                response.sendError(HttpServletResponse.SC_NOT_FOUND, "Client non trouvé");
+                return;
+            }
+            
+            // Get interest rate at date
+            BigDecimal tauxInteret = comptePretService.findTauxInteretByDate(dateCreation);
+            
+            request.setAttribute("client", client);
+            request.setAttribute("dateCreation", dateCreation);
+            request.setAttribute("dateCreationFormatted", dateCreation.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")));
+            request.setAttribute("dateCreationStr", dateCreationStr);
+            request.setAttribute("tauxInteret", tauxInteret);
+            request.setAttribute("soldeInitial", BigDecimal.ZERO);
+            request.setAttribute("contentPage", "/views/compte_pret/preview.jsp");
+            request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
+
+        } else if (pathInfo != null && pathInfo.equals("/transaction")) {
+            // Charger la liste des types de paiement pour le formulaire de prêt
+            Map<Long, String> typesPaiement = comptePretService.listerTypesPaiement();
+            request.setAttribute("typesPaiement", typesPaiement);
+            request.setAttribute("contentPage", "/views/compte_pret/transaction.jsp");
+            request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
+
+        } else if (pathInfo != null && pathInfo.equals("/contrats")) {
+            String compteIdStr = request.getParameter("compteId");
+            if (compteIdStr == null) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "compteId requis");
+                return;
+            }
+            Long compteId = Long.parseLong(compteIdStr);
+            List<ContratPretDTO> contrats = comptePretService.findContratsByComptePretId(compteId);
+            request.setAttribute("contrats", contrats);
+            request.setAttribute("compteId", compteId);
+            request.setAttribute("contentPage", "/views/compte_pret/contrats.jsp");
+            request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
+
+        } else if (pathInfo != null && pathInfo.equals("/echeances")) {
+            String contratIdStr = request.getParameter("contratId");
+            String compteIdStr = request.getParameter("compteId");
+            if (contratIdStr == null || compteIdStr == null) {
+                response.sendError(HttpServletResponse.SC_BAD_REQUEST, "contratId et compteId requis");
+                return;
+            }
+            Long contratId = Long.parseLong(contratIdStr);
+            Long compteId = Long.parseLong(compteIdStr);
+            List<EcheanceDTO> echeances = comptePretService.findEcheancesByContratId(contratId);
+            request.setAttribute("echeances", echeances);
+            request.setAttribute("contratId", contratId);
+            request.setAttribute("compteId", compteId);
+            request.setAttribute("contentPage", "/views/compte_pret/echeances.jsp");
             request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
 
         } else {
@@ -116,17 +180,19 @@ public class ComptePretController extends HttpServlet { // Étendre HttpServlet
         } else if (pathInfo != null && pathInfo.equals("/create")) {
             try {
                 String clientIdStr = request.getParameter("clientId");
-                
+                String dateCreationStr = request.getParameter("dateCreation");
 
-                if (clientIdStr == null) {
+                if (clientIdStr == null || dateCreationStr == null) {
                     throw new IllegalArgumentException("Tous les champs sont obligatoires.");
                 }
 
                 Long clientId = Long.parseLong(clientIdStr);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                LocalDateTime dateCreation = LocalDateTime.parse(dateCreationStr, formatter);
                 BigDecimal soldeRestantDu = new BigDecimal("0"); // Valeur par défaut
 
-                comptePretService.creerComptePret(clientId, soldeRestantDu, LocalDateTime.now());
-                request.getSession().setAttribute("successMessage", "Compte prêt créé avec succès !");
+                comptePretService.creerComptePret(clientId, soldeRestantDu, dateCreation);
+
                 response.sendRedirect(request.getContextPath() + "/compte-pret/success");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -152,7 +218,7 @@ public class ComptePretController extends HttpServlet { // Étendre HttpServlet
                 int duree = Integer.parseInt(dureeStr); // en mois
                 LocalDateTime datePret = LocalDateTime.now();
                 comptePretService.preter(comptePretId, montant, typePaiementId, duree, datePret);
-                request.getSession().setAttribute("successMessage", "Prêt effectué avec succès !");
+                
                 response.sendRedirect(request.getContextPath() + "/compte-pret/success");
             } catch (Exception e) {
                 e.printStackTrace();
@@ -161,6 +227,56 @@ public class ComptePretController extends HttpServlet { // Étendre HttpServlet
                 request.setAttribute("typesPaiement", typesPaiement);
                 request.setAttribute("errorMessage", "Erreur lors de l'exécution du prêt : " + e.getMessage());
                 request.setAttribute("contentPage", "/views/compte_pret/preter.jsp");
+                request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
+            }
+        } else if (pathInfo != null && pathInfo.equals("/preview")) {
+            try {
+                String clientIdStr = request.getParameter("clientId");
+                String dateCreationStr = request.getParameter("dateCreation");
+                String confirm = request.getParameter("confirm");
+
+                if (clientIdStr == null || dateCreationStr == null) {
+                    throw new IllegalArgumentException("Paramètres manquants.");
+                }
+
+                Long clientId = Long.parseLong(clientIdStr);
+                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+                LocalDateTime dateCreation = LocalDateTime.parse(dateCreationStr, formatter);
+
+                if ("true".equals(confirm)) {
+                    // Create the account
+                    BigDecimal soldeRestantDu = new BigDecimal("0");
+                    comptePretService.creerComptePret(clientId, soldeRestantDu, dateCreation);
+                    request.getSession().setAttribute("successMessage", "Compte prêt créé avec succès !");
+                    response.sendRedirect(request.getContextPath() + "/clients/situation?id=" + clientId);
+                } else {
+                    // Back to preview
+                    response.sendRedirect(request.getContextPath() + "/compte-pret/preview?clientId=" + clientId + "&dateCreation=" + dateCreationStr);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("errorMessage", "Erreur lors de la création du compte prêt : " + e.getMessage());
+                request.setAttribute("contentPage", "/views/compte_pret/preview.jsp");
+                request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
+            }
+        } else if (pathInfo != null && pathInfo.equals("/payer-echeance")) {
+            try {
+                String echeanceIdStr = request.getParameter("echeanceId");
+                String contratIdStr = request.getParameter("contratId");
+                String compteIdStr = request.getParameter("compteId");
+                if (echeanceIdStr == null || contratIdStr == null || compteIdStr == null) {
+                    throw new IllegalArgumentException("Paramètres manquants.");
+                }
+                Long echeanceId = Long.parseLong(echeanceIdStr);
+                Long contratId = Long.parseLong(contratIdStr);
+                Long compteId = Long.parseLong(compteIdStr);
+                comptePretService.payerEcheance(echeanceId);
+                request.getSession().setAttribute("successMessage", "Échéance payée avec succès !");
+                response.sendRedirect(request.getContextPath() + "/compte-pret/echeances?contratId=" + contratId + "&compteId=" + compteId);
+            } catch (Exception e) {
+                e.printStackTrace();
+                request.setAttribute("errorMessage", "Erreur lors du paiement de l'échéance : " + e.getMessage());
+                request.setAttribute("contentPage", "/views/compte_pret/echeances.jsp");
                 request.getRequestDispatcher("/views/includes/layout.jsp").forward(request, response);
             }
         } else {

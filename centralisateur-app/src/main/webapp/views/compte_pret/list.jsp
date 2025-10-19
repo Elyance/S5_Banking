@@ -26,7 +26,7 @@
                 <td>${item.comptePret.dateCreation}</td>
                 <td>${item.comptePret.statutLibelle}</td>
                 <td>
-                    <a href="${pageContext.request.contextPath}/compte-pret/preter?compteId=${item.comptePret.id}" class="btn btn-primary btn-sm">Preter de l'argent</a>
+                    <a href="${pageContext.request.contextPath}/compte-pret/transaction?compteId=${item.comptePret.id}" class="btn btn-primary btn-sm">Transactions</a>
                     <a href="${pageContext.request.contextPath}/compte-pret/rembourser?compteId=${item.comptePret.id}" class="btn btn-primary btn-sm">Rembourser de l'argent</a> 
                 </td>
             </tr>

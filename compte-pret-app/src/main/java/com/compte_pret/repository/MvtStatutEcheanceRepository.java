@@ -13,4 +13,11 @@ public class MvtStatutEcheanceRepository {
     public void save(MvtStatutEcheance mvtStatutEcheance) {
         em.persist(mvtStatutEcheance);
     }
+
+    public MvtStatutEcheance findLatestByEcheanceId(Long echeanceId) {
+        return em.createQuery("SELECT m FROM MvtStatutEcheance m WHERE m.echeance.id = :echeanceId ORDER BY m.dateChangement DESC", MvtStatutEcheance.class)
+                 .setParameter("echeanceId", echeanceId)
+                 .setMaxResults(1)
+                 .getSingleResult();
+    }
 }

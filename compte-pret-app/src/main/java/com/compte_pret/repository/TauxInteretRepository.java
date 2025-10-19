@@ -5,6 +5,8 @@ import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
+import java.time.LocalDateTime;
+
 @ApplicationScoped
 public class TauxInteretRepository {
     @PersistenceContext
@@ -18,6 +20,14 @@ public class TauxInteretRepository {
     // find latest taux d'interet
     public TauxInteret findLatest() {
         return em.createQuery("SELECT t FROM TauxInteret t ORDER BY t.dateDebut DESC", TauxInteret.class)
+                 .setMaxResults(1)
+                 .getSingleResult();
+    }
+
+    public TauxInteret findTauxInteretByDate(LocalDateTime date) {
+        String jpql = "SELECT t FROM TauxInteret t WHERE t.dateDebut <= :date ORDER BY t.dateDebut DESC";
+        return em.createQuery(jpql, TauxInteret.class)
+                 .setParameter("date", date)
                  .setMaxResults(1)
                  .getSingleResult();
     }

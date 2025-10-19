@@ -42,6 +42,26 @@ public class ComptePretRepository {
             .getResultList();
     }
 
+    public List<ComptePretWithStatusDTO> findByClientId(Long clientId) {
+        String jpql = "SELECT new com.compte_pret.dto.ComptePretWithStatusDTO(" +
+                "cp.id, cp.numeroCompte, cp.clientId, cp.soldeRestantDu, " +
+                "cp.dateCreation, scp.libelle, mscp.dateChangement) " +
+                "FROM ComptePret cp " +
+                "INNER JOIN MvtStatutComptePret mscp ON cp.id = mscp.comptePret.id " +
+                "INNER JOIN StatutComptePret scp ON mscp.statutComptePret.id = scp.id " +
+                "WHERE mscp.dateChangement = (" +
+                "    SELECT MAX(mscp2.dateChangement) " +
+                "    FROM MvtStatutComptePret mscp2 " +
+                "    WHERE mscp2.comptePret.id = cp.id" +
+                ") " +
+                "AND cp.clientId = :clientId " +
+                "ORDER BY cp.dateCreation DESC";
+
+        return em.createQuery(jpql, ComptePretWithStatusDTO.class)
+                .setParameter("clientId", clientId)
+                .getResultList();
+    }
+
     // findById
     public ComptePret findById(Long id) {
         return em.find(ComptePret.class, id);

@@ -41,5 +41,48 @@ public class CompteController extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        String servletPath = req.getServletPath();
+        String pathInfo = req.getPathInfo();
+        if ("/comptes/create".equals(servletPath) || "/create".equals(pathInfo)) {
+            createCompte(req, resp);
+        } else {
+            // Default behavior - redirect to clients list or show error
+            resp.sendRedirect(req.getContextPath() + "/clients");
+        }
+    }
+
+    private void createCompte(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        // Implementation for creating a compte based on form submission
+        String clientId = req.getParameter("clientId");
+        String dateCreation = req.getParameter("dateCreation");
+        String typeCompte = req.getParameter("typeCompte");
+
+        // Validate and process the form data
+        if (clientId != null && dateCreation != null && typeCompte != null) {
+            try {
+                // Call the service layer to create the compte
+                if (typeCompte.equals("compte-courant")) {
+                    // Call CompteCourantService to create compte courant
+                    // compteCourantService.creerCompteCourant(...);
+                    resp.sendRedirect(req.getContextPath() + "/compte-courant/preview?clientId=" + clientId + "&dateCreation=" + dateCreation);
+                } else if (typeCompte.equals("compte-pret")) {
+                    // Call ComptePretService to create compte pret
+                    // comptePretService.creerComptePret(...);
+                    resp.sendRedirect(req.getContextPath() + "/compte-pret/preview?clientId=" + clientId + "&dateCreation=" + dateCreation);
+                }
+            } catch (Exception e) {
+                // Handle errors (e.g., invalid data, service errors)
+                req.setAttribute("errorMessage", "Erreur lors de la création du compte");
+                req.getRequestDispatcher("/views/includes/error.jsp").forward(req, resp);
+            }
+        } else {
+            // Handle missing parameters
+            req.setAttribute("errorMessage", "Paramètres manquants");
+            req.getRequestDispatcher("/views/includes/error.jsp").forward(req, resp);
+        }
+    }
+
     
 }

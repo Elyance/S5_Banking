@@ -2,6 +2,7 @@ package com.centralisateur.controller;
 
 import com.centralisateur.service.ClientService;
 import com.centralisateur.service.CompteCourantService;
+import com.centralisateur.service.ComptePretService;
 import com.centralisateur.entity.*;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -12,12 +13,18 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.*;
 
-import com.compte_courant.dto.CompteCourantWithStatusDTO;
+import com.compte_pret.dto.*;
+import com.compte_courant.dto.*;
+
 import java.util.List;
+import java.math.BigDecimal;
 
 @WebServlet({"/clients", "/clients/create", "/clients/details", "/clients/edit", "/clients/delete", "/clients/situation"})
 public class ClientController extends HttpServlet {
+    
     private final CompteCourantService compteCourantService = new CompteCourantService();
+
+    private final ComptePretService comptePretService = new ComptePretService();
 
 	@Inject
 	private ClientService clientService;
@@ -59,6 +66,20 @@ public class ClientController extends HttpServlet {
                 // req.setAttribute("totalBalance", soldeTotal);
                 List<CompteCourantWithStatusDTO> comptesCourantDuClient = compteCourantService.getComptesByClientId(client.getId());
                 req.setAttribute("comptesCourant", comptesCourantDuClient);
+
+                List<ComptePretWithStatusDTO> comptesPretDuClient = comptePretService.findComptesByClientId(client.getId());
+                req.setAttribute("comptesPret", comptesPretDuClient);
+                
+                // Calcul du résumé financier : solde courant - solde prêt
+                BigDecimal totalCourant = comptesCourantDuClient.stream()
+                    .map(CompteCourantWithStatusDTO::getSolde)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal totalPret = comptesPretDuClient.stream()
+                    .map(ComptePretWithStatusDTO::getSoldeRestantDu)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal resumeFinancier = totalCourant.subtract(totalPret);
+                req.setAttribute("resumeFinancier", resumeFinancier);
+                
                 // TODO: Ajouter les données des comptes et soldes ici
                 // req.setAttribute("comptes", comptesDuClient);
                 // req.setAttribute("soldeTotal", soldeTotal);
