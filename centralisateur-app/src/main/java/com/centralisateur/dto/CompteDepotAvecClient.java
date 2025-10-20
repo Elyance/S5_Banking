@@ -12,6 +12,7 @@ public class CompteDepotAvecClient {
     private String numeroCompte;
     private String dateCreation;
     private BigDecimal solde;
+    private BigDecimal tauxInteret;
 
     public CompteDepotAvecClient() {
     }
@@ -67,5 +68,13 @@ public class CompteDepotAvecClient {
 
     public void setSolde(BigDecimal solde) {
         this.solde = solde;
+    }
+
+    public BigDecimal getTauxInteret() {
+        return tauxInteret;
+    }
+
+    public void setTauxInteret(BigDecimal tauxInteret) {
+        this.tauxInteret = tauxInteret;
     }
 }

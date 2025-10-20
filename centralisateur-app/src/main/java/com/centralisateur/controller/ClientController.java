@@ -3,6 +3,7 @@ package com.centralisateur.controller;
 import com.centralisateur.service.ClientService;
 import com.centralisateur.service.CompteCourantService;
 import com.centralisateur.service.ComptePretService;
+import com.centralisateur.service.CompteDepotService;
 import com.centralisateur.entity.*;
 import jakarta.inject.Inject;
 import jakarta.servlet.ServletException;
@@ -15,6 +16,7 @@ import java.time.*;
 
 import com.compte_pret.dto.*;
 import com.compte_courant.dto.*;
+import com.centralisateur.dto.CompteDepotAvecClient;
 
 import java.util.List;
 import java.math.BigDecimal;
@@ -29,7 +31,8 @@ public class ClientController extends HttpServlet {
 	@Inject
 	private ClientService clientService;
 
-
+	@Inject
+	private CompteDepotService compteDepotService;
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -70,14 +73,28 @@ public class ClientController extends HttpServlet {
                 List<ComptePretWithStatusDTO> comptesPretDuClient = comptePretService.findComptesByClientId(client.getId());
                 req.setAttribute("comptesPret", comptesPretDuClient);
                 
-                // Calcul du résumé financier : solde courant - solde prêt
+                                // Comptes dépôt
+                List<CompteDepotAvecClient> comptesDepot = new java.util.ArrayList<>();
+                try {
+                    String comptesDepotJson = compteDepotService.getComptesDepotByClientId(client.getId());
+                    comptesDepot = compteDepotService.parseComptesDepotJson(comptesDepotJson);
+                    req.setAttribute("comptesDepot", comptesDepot);
+                } catch (Exception e) {
+                    // If error, set empty list
+                    req.setAttribute("comptesDepot", comptesDepot);
+                }
+                
+                // Calcul du résumé financier : solde courant - solde prêt + solde dépôt
                 BigDecimal totalCourant = comptesCourantDuClient.stream()
                     .map(CompteCourantWithStatusDTO::getSolde)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
                 BigDecimal totalPret = comptesPretDuClient.stream()
                     .map(ComptePretWithStatusDTO::getSoldeRestantDu)
                     .reduce(BigDecimal.ZERO, BigDecimal::add);
-                BigDecimal resumeFinancier = totalCourant.subtract(totalPret);
+                BigDecimal totalDepot = comptesDepot.stream()
+                    .map(CompteDepotAvecClient::getSolde)
+                    .reduce(BigDecimal.ZERO, BigDecimal::add);
+                BigDecimal resumeFinancier = totalCourant.subtract(totalPret).add(totalDepot);
                 req.setAttribute("resumeFinancier", resumeFinancier);
                 
                 // TODO: Ajouter les données des comptes et soldes ici

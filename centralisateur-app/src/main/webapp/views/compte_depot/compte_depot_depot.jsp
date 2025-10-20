@@ -1,9 +1,9 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <div class="container mt-4">
     <h2>Dépôt sur un compte dépôt</h2>
-    <form method="post" action="${pageContext.request.contextPath}/compte-depot/depot">
+    <form method="post" action="${pageContext.request.contextPath}/compte-depot/doDepot">
         <div class="mb-3">
-            <input hidden type="number" class="form-control" id="compteDepotId" name="compteDepotId" value="${param.compteDepotId}" required>
+            <input hidden type="number" class="form-control" id="compteDepotId" name="compteDepotId" value="${param.compteId}" required>
         </div>
         <div class="mb-3">
             <label for="montant" class="form-label">Montant à déposer</label>

@@ -127,14 +127,14 @@ public class CompteDepotService {
         }
     }
 
-    public String listerComptesDepot() throws Exception {
-        URL url = new URL("http://localhost:5126/api/CompteDepot/list");
+    public String getComptesDepotByClientId(long clientId) throws Exception {
+        URL url = new URL("http://localhost:5126/api/CompteDepot/client/" + clientId);
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
         con.setRequestMethod("GET");
         con.setRequestProperty("Accept", "application/json");
 
         int code = con.getResponseCode();
-        System.out.println("Réponse HTTP liste comptes dépôt: " + code);
+        System.out.println("Réponse HTTP getComptesDepotByClientId: " + code);
         if (code >= 200 && code < 300) {
             try (InputStream is = con.getInputStream();
                  BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
@@ -149,14 +149,43 @@ public class CompteDepotService {
             try (InputStream is = con.getErrorStream();
                  BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
                 String errorResponse = br.readLine();
-                System.out.println("Erreur liste comptes dépôt: " + errorResponse);
+                System.out.println("Erreur getComptesDepotByClientId: " + errorResponse);
             }
-            throw new Exception("Erreur lors de la récupération des comptes dépôt");
+            throw new Exception("Erreur lors de la récupération des comptes dépôt pour le client " + clientId);
         }
     }
 
+    public String listerComptesDepot() throws Exception {
+        URL url = new URL("http://localhost:5126/api/CompteDepot/list");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json");
 
-    public List<CompteDepotAvecClient> extractClientIdsFromComptesJson(String comptesJson) throws Exception {
+        int code = con.getResponseCode();
+        System.out.println("Réponse HTTP getAllComptesDepots: " + code);
+        if (code >= 200 && code < 300) {
+            try (InputStream is = con.getInputStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line.trim());
+                }
+                return response.toString();
+            }
+        } else {
+            try (InputStream is = con.getErrorStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String errorResponse = br.readLine();
+                System.out.println("Erreur getAllComptesDepots: " + errorResponse);
+            }
+            throw new Exception("Erreur lors de la récupération des comptes dépôt");
+        }
+
+    }
+
+
+    public List<CompteDepotAvecClient> parseComptesDepotJson(String comptesJson) throws Exception {
         List<CompteDepotAvecClient> result = new ArrayList<>();
 
         if (comptesJson == null || comptesJson.isEmpty()) return result;
@@ -247,6 +276,12 @@ public class CompteDepotService {
                     if (dateCreation == null && obj.containsKey("DateCreation")) dateCreation = obj.getString("DateCreation", null);
                     compteDepotAvecClient.setDateCreation(dateCreation);
 
+                    // Fetch tauxInteret using dateCreation
+                    if (dateCreation != null) {
+                        BigDecimal taux = getTauxInteretByDate(dateCreation);
+                        compteDepotAvecClient.setTauxInteret(taux);
+                    }
+
                     // solde
                     if (obj.containsKey("solde")) {
                         JsonValue sv = obj.get("solde");
@@ -316,4 +351,55 @@ public class CompteDepotService {
             return false;
         }
     }
+
+    public BigDecimal getTauxInteretByDate(String date) {
+        try {
+            URL url = new URL("http://localhost:5126/api/CompteDepot/taux/by-date?date=" + date);
+            HttpURLConnection con = (HttpURLConnection) url.openConnection();
+            con.setRequestMethod("GET");
+            con.setRequestProperty("Accept", "application/json");
+
+            int code = con.getResponseCode();
+            System.out.println("Réponse HTTP getTauxInteretByDate: " + code);
+
+            if (code >= 200 && code < 300) {
+                try (InputStream is = con.getInputStream();
+                     BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) response.append(line.trim());
+                    String jsonResponse = response.toString();
+                    System.out.println("getTauxInteretByDate réponse: " + jsonResponse);
+
+                    try (JsonReader jsonReader = Json.createReader(new StringReader(jsonResponse))) {
+                        JsonObject obj = jsonReader.readObject();
+
+                        // Récupère seulement la valeur du taux d'intérêt
+                        if (obj.containsKey("valeur") && !obj.isNull("valeur")) {
+                            long valeur = obj.getJsonNumber("valeur").longValue();
+                            return BigDecimal.valueOf(valeur);
+                        } else {
+                            System.out.println("Clé 'valeur' non trouvée dans la réponse");
+                            return BigDecimal.ZERO;
+                        }
+                    }
+                }
+            } else {
+                try (InputStream is = con.getErrorStream();
+                     BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                    StringBuilder err = new StringBuilder();
+                    String line;
+                    while ((line = br.readLine()) != null) err.append(line.trim());
+                    System.out.println("getTauxInteretByDate erreur: " + err.toString());
+                }
+                return BigDecimal.ZERO;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            return BigDecimal.ZERO;
+        }
+    }
+
+
+    
 }

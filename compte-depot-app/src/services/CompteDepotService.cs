@@ -12,23 +12,21 @@ namespace CompteDepotService.Services
             _context = context;
         }
 
-        public CompteDepot CreateCompteDepot(CompteDepot compteDepot)
+        public CompteDepot CreateCompteDepot(CompteDepot compteDepot, DateTime dateCreation)
         {
             Console.WriteLine("[DEBUG] Début création CompteDepot pour ClientId: " + compteDepot.ClientId);
 
-            // Associer le dernier taux d'intérêt (le plus récent)
-            var dernierTaux = _context.TauxInterets
-                .OrderByDescending(t => t.DateDebut)
-                .FirstOrDefault();
-            if (dernierTaux != null)
+            // Associer le taux d'intérêt applicable à la date de création
+            var tauxApplicable = GetTauxByDate(dateCreation);
+            if (tauxApplicable != null)
             {
-                Console.WriteLine($"[DEBUG] Dernier taux trouvé: Id={dernierTaux.Id}, Valeur={dernierTaux.Valeur}, DateDebut={dernierTaux.DateDebut}");
-                compteDepot.TauxInteretId = dernierTaux.Id;
-                compteDepot.TauxInteret = dernierTaux;
+                Console.WriteLine($"[DEBUG] Taux applicable trouvé: Id={tauxApplicable.Id}, Valeur={tauxApplicable.Valeur}, DateDebut={tauxApplicable.DateDebut}");
+                compteDepot.TauxInteretId = tauxApplicable.Id;
+                compteDepot.TauxInteret = tauxApplicable;
             }
             else
             {
-                Console.WriteLine("[DEBUG] Aucun taux d'intérêt trouvé en base !");
+                Console.WriteLine("[DEBUG] Aucun taux d'intérêt applicable trouvé pour la date !");
             }
 
             _context.ComptesDepot.Add(compteDepot);
@@ -81,6 +79,13 @@ namespace CompteDepotService.Services
             return _context.ComptesDepot.ToList();
         }
 
+        public IEnumerable<CompteDepot> GetComptesByClientId(long clientId)
+        {
+            return _context.ComptesDepot
+                .Where(c => c.ClientId == clientId)
+                .ToList();
+        }
+
         // Crée un nouveau taux d'intérêt en base
         public TauxInteret CreateTauxInteret(TauxInteret tauxInteret)
         {
@@ -109,10 +114,17 @@ namespace CompteDepotService.Services
         public TauxInteret GetLatestTaux()
         {
             return _context.TauxInterets
-                .OrderByDescending(t => t.DateDebut)
+                .OrderByDescending(static t => t.DateDebut)
                 .FirstOrDefault();
         }
 
-        
+        public TauxInteret GetTauxByDate(DateTime date)
+        {
+            return _context.TauxInterets
+                .Where(t => t.DateDebut <= date)
+                .OrderByDescending(t => t.DateDebut)
+                .FirstOrDefault();
+
+        }
     }
 }

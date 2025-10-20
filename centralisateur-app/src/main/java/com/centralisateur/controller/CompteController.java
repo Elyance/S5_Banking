@@ -71,6 +71,14 @@ public class CompteController extends HttpServlet {
                     // Call ComptePretService to create compte pret
                     // comptePretService.creerComptePret(...);
                     resp.sendRedirect(req.getContextPath() + "/compte-pret/preview?clientId=" + clientId + "&dateCreation=" + dateCreation);
+                } else if (typeCompte.equals("compte-depot")) {
+                    // Call CompteDepotService to create compte depot
+                    // compteDepotService.creerCompteDepot(...);
+                    resp.sendRedirect(req.getContextPath() + "/compte-depot/preview?clientId=" + clientId + "&dateCreation=" + dateCreation);
+                } else {
+                    // Handle unknown compte type
+                    req.setAttribute("errorMessage", "Type de compte inconnu");
+                    req.getRequestDispatcher("/views/includes/error.jsp").forward(req, resp);
                 }
             } catch (Exception e) {
                 // Handle errors (e.g., invalid data, service errors)

@@ -122,11 +122,10 @@
                         </ul>
                     </div>
                     <div class="card-footer">
-                        <a href="${pageContext.request.contextPath}/compte-depot/create?clientId=${client.id}"
-                           class="btn btn-success w-100">
+                        <button type="submit" class="btn btn-success w-100" onclick="this.form.action='${pageContext.request.contextPath}/compte-depot/preview'; this.form.typeCompte.value='compte-depot';">
                             <i class="fas fa-plus me-2"></i>
                             Créer un compte dépôt
-                        </a>
+                        </button>
                     </div>
                 </div>
             </div>

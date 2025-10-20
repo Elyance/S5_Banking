@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <h2>Creer un compte depot</h2>
-<form action="${pageContext.request.contextPath}/compte-depot/create" method="post" class="form">
+<form action="${pageContext.request.contextPath}/compte-depot/preview" method="get" class="form">
     <div class="mb-3">
         <label for="clientId" class="form-label">Client</label>
         <select name="clientId" id="clientId" class="form-control" required>
@@ -11,6 +11,10 @@
             </c:forEach>
         </select>
     </div>
-    <button type="submit" class="btn btn-success">Créer</button>
+    <div class="mb-3">
+        <label for="solde" class="form-label">Solde initial</label>
+        <input type="number" name="solde" id="solde" class="form-control" step="0.01" placeholder="0.00" value="0.00">
+    </div>
+    <button type="submit" class="btn btn-primary">Prévisualiser</button>
     <a href="${pageContext.request.contextPath}/compte-depot/list" class="btn btn-secondary">Annuler</a>
 </form>

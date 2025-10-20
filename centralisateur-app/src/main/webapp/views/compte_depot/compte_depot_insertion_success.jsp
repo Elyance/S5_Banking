@@ -5,10 +5,7 @@
         <p>Le compte de dépôt a été créé avec succès.</p>
         <hr>
         <p class="mb-0">
-            <a href="${pageContext.request.contextPath}/compte-depot/create" class="btn btn-primary">
-                Créer un autre compte
-            </a>
-            <a href="${pageContext.request.contextPath}/" class="btn btn-secondary">
+            <a href="${pageContext.request.contextPath}/dashboard" class="btn btn-secondary">
                 Retour à l'accueil
             </a>
         </p>

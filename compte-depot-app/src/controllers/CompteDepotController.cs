@@ -24,12 +24,34 @@ namespace CompteDepotService.Controllers
             return Ok(comptes);
         }
 
-        [HttpPost]
-        public ActionResult<CompteDepot> CreateCompteDepot([FromBody] CompteDepot compteDepot)
+        [HttpGet("client/{clientId}")]
+        public ActionResult<IEnumerable<CompteDepot>> GetComptesByClientId(long clientId)
         {
-            var created = _service.CreateCompteDepot(compteDepot);
+            var comptes = _service.GetComptesByClientId(clientId);
+            return Ok(comptes);
+        }
+
+        [HttpPost]
+        public ActionResult<CompteDepot> CreateCompteDepot([FromBody] CompteDepotCreateRequest request)
+        {
+            var dateCreation = string.IsNullOrEmpty(request.DateCreation) ? DateTime.UtcNow : DateTime.Parse(request.DateCreation).ToUniversalTime();
+            var compteDepot = new CompteDepot
+            {
+                ClientId = request.ClientId,
+                Solde = request.Solde,
+                DateCreation = dateCreation
+            };
+            var created = _service.CreateCompteDepot(compteDepot, dateCreation);
             return CreatedAtAction(nameof(CreateCompteDepot), new { id = created.Id }, created);
         }
+        // DTO pour la création de compte dépôt
+        public class CompteDepotCreateRequest
+        {
+            public long ClientId { get; set; }
+            public decimal Solde { get; set; }
+            public string? DateCreation { get; set; }
+        }
+
         // DTO pour le dépôt
         public class DepotRequest
         {
@@ -88,6 +110,21 @@ namespace CompteDepotService.Controllers
         public ActionResult<TauxInteret> GetLatestTaux()
         {
             var taux = _service.GetLatestTaux();
+            if (taux == null) return NotFound();
+            return Ok(taux);
+        }
+
+        [HttpGet("taux/by-date")]
+        public ActionResult<TauxInteret> GetTauxByDate([FromQuery] string date)
+        {
+            if (!DateTime.TryParse(date, out DateTime parsedDate))
+            {
+                return BadRequest(new { error = "Format de date invalide" });
+            }
+
+            parsedDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
+
+            var taux = _service.GetTauxByDate(parsedDate);
             if (taux == null) return NotFound();
             return Ok(taux);
         }

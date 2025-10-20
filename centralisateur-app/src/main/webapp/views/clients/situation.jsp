@@ -85,7 +85,7 @@
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
-                                <div class="text-muted">Situation financière (Courant - Prêt)</div>
+                                <div class="text-muted">Situation financière (Courant - Prêt + Dépôt)</div>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                                                 <i class="fas fa-credit-card me-2"></i>
                                                 Compte Courant
                                             </h6>
-                                            <span class="badge bg-light text-primary">${compte.statusLibelle}</span>
+                                            <span class="badge bg-light text-primary">${compte.statutLibelle}</span>
                                         </div>
                                     </div>
                                     <div class="card-body">
@@ -238,58 +238,74 @@
 
                 <!-- Comptes Dépôts -->
                 <h5 class="mb-3">Comptes Dépôts</h5>
-                <div class="row">
+                <div class="row mb-4">
                     <div class="col-12">
                         <div class="d-flex overflow-x-auto pb-2">
-                            <!-- Exemple de compte dépôt -->
-                            <div class="card border-info h-100 me-3" style="min-width: 300px;">
-                                <div class="card-header bg-info text-white">
-                                    <div class="d-flex justify-content-between align-items-center">
-                                        <h6 class="mb-0">
-                                            <i class="fas fa-piggy-bank me-2"></i>
-                                            Compte Dépôt
-                                        </h6>
-                                        <span class="badge bg-light text-info">Actif</span>
+                            <c:forEach var="compteDepot" items="${comptesDepot}">
+                                <div class="card border-info h-100 me-3" style="min-width: 300px;">
+                                    <div class="card-header bg-info text-white">
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <h6 class="mb-0">
+                                                <i class="fas fa-piggy-bank me-2"></i>
+                                                Compte Dépôt
+                                            </h6>
+                                            <span class="badge bg-light text-info">Actif</span>
+                                        </div>
+                                    </div>
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Numéro de compte</small>
+                                                <div class="fw-bold">${compteDepot.numeroCompte}</div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Solde actuel</small>
+                                                <div class="fw-bold text-info fs-5">
+                                                    <fmt:formatNumber value="${compteDepot.solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <hr>
+                                        <div class="row">
+                                            <div class="col-6">
+                                                <small class="text-muted">Date d'ouverture</small>
+                                                <div class="fw-bold">
+                                                    ${compteDepot.dateCreation}
+                                                </div>
+                                            </div>
+                                            <div class="col-6">
+                                                <small class="text-muted">Taux d'intérêt</small>
+                                                <div class="fw-bold">
+                                                    <c:if test="${not empty compteDepot.tauxInteret}">
+                                                        <fmt:formatNumber value="${compteDepot.tauxInteret}" type="number" minFractionDigits="2" maxFractionDigits="2" /> %
+                                                    </c:if>
+                                                    <c:if test="${empty compteDepot.tauxInteret}">
+                                                        Non défini
+                                                    </c:if>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="card-footer">
+                                        <div class="btn-group w-100">
+                                            <a href="${pageContext.request.contextPath}/compte-depot/transaction?compteId=${compteDepot.id}"
+                                               class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-plus me-1"></i>
+                                                Transaction
+                                            </a>
+                                            <a href="${pageContext.request.contextPath}/compte-depot/list"
+                                               class="btn btn-outline-info btn-sm">
+                                                <i class="fas fa-eye me-1"></i>
+                                                Détails
+                                            </a>
+                                        </div>
                                     </div>
                                 </div>
-                                <div class="card-body">
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <small class="text-muted">Numéro de compte</small>
-                                            <div class="fw-bold">DP00123456</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Solde actuel</small>
-                                            <div class="fw-bold text-info fs-5">5,200.00 €</div>
-                                        </div>
-                                    </div>
-                                    <hr>
-                                    <div class="row">
-                                        <div class="col-6">
-                                            <small class="text-muted">Taux d'intérêt</small>
-                                            <div class="fw-bold">1.25%</div>
-                                        </div>
-                                        <div class="col-6">
-                                            <small class="text-muted">Date d'ouverture</small>
-                                            <div class="fw-bold">20/06/2023</div>
-                                        </div>
-                                    </div>
-                                </div>
-                                <div class="card-footer">
-                                    <div class="btn-group w-100">
-                                        <a href="${pageContext.request.contextPath}/compte-depot/transaction?compteId=3"
-                                           class="btn btn-outline-info btn-sm">
-                                            <i class="fas fa-exchange-alt me-1"></i>
-                                            Transaction
-                                        </a>
-                                        <a href="${pageContext.request.contextPath}/compte-depot/list"
-                                           class="btn btn-outline-info btn-sm">
-                                            <i class="fas fa-eye me-1"></i>
-                                            Détails
-                                        </a>
-                                    </div>
-                                </div>
-                            </div>
+                            </c:forEach>
+
+                            <c:if test="${empty comptesDepot}">
+                                <div class="text-muted p-3">Aucun compte dépôt trouvé pour ce client.</div>
+                            </c:if>
                         </div>
                     </div>
                 </div>
