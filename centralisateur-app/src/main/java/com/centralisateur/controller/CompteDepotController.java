@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 
-@WebServlet(urlPatterns = {"/compte-depot/doDepot", "/compte-depot/depot", "/compte-depot/list", "/compte-depot/taux", "/compte-depot/taux-interet", "/compte-depot/preview", "/compte-depot/confirm", "/compte-depot/transaction"})
+@WebServlet(urlPatterns = {"/compte-depot/doDepot", "/compte-depot/depot", "/compte-depot/doRetrait", "/compte-depot/retrait", "/compte-depot/list", "/compte-depot/taux", "/compte-depot/taux-interet", "/compte-depot/preview", "/compte-depot/confirm", "/compte-depot/transaction","compte-depot/details"})
 public class CompteDepotController extends HttpServlet {
     @Inject
     private ClientService clientService;
@@ -57,12 +57,39 @@ public class CompteDepotController extends HttpServlet {
             }
             req.setAttribute("contentPage", "/views/compte_depot/compte_depot_depot.jsp");
 
+        } else if (uri.endsWith("/retrait")) {
+            String compteId = req.getParameter("compteId");
+            if (compteId != null) {
+                req.setAttribute("compteId", compteId);
+            } else {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètre compteId manquant");
+                return;
+            }
+            req.setAttribute("contentPage", "/views/compte_depot/compte_depot_retrait.jsp");
+
         } else if (uri.endsWith("/transaction")) {
 
             String compteId = req.getParameter("compteId");
             if (compteId != null) {
                 req.setAttribute("compteId", compteId);
                 req.setAttribute("contentPage", "/views/compte_depot/compte_depot_choose_transaction.jsp");
+            } else {
+                resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètre compteId manquant");
+                return;
+            }
+        } else if (uri.endsWith("/details")) {
+            String compteId = req.getParameter("compteId");
+            if (compteId != null) {
+                try {
+                    String historyJson = compteDepotService.getTransactionHistoryWithInterests(Long.parseLong(compteId));
+                    req.setAttribute("historyJson", historyJson);
+                    req.setAttribute("compteId", compteId);
+                    req.setAttribute("contentPage", "/views/compte_depot/compte_depot_details.jsp");
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    req.setAttribute("error", "Erreur lors de la récupération des détails: " + e.getMessage());
+                    req.setAttribute("contentPage", "/views/compte_depot/compte_depot_list.jsp");
+                }
             } else {
                 resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètre compteId manquant");
                 return;
@@ -195,6 +222,36 @@ public class CompteDepotController extends HttpServlet {
                 boolean success = compteDepotService.deposerSurCompteDepot(json);
                 if (success) {
                     req.setAttribute("contentPage", "/views/compte_depot/compte_depot_depot_success.jsp");
+                } else {
+                    req.setAttribute("contentPage", "/views/compte_depot/compte_depot_insertion_error.jsp");
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
+                req.setAttribute("error", "Erreur de connexion au service: " + e.getMessage());
+                req.setAttribute("contentPage", "/views/compte_depot/compte_depot_insertion_error.jsp");
+            }
+        }
+        if (uri.endsWith("/doRetrait")) {
+
+            System.out.println("Received POST request for retrait");
+            String compteDepotId = req.getParameter("compteDepotId");
+            String montant = req.getParameter("montant");
+            String dateRetrait = req.getParameter("dateRetrait");
+
+            // Validation basique
+            if (compteDepotId == null || compteDepotId.isEmpty() || montant == null || montant.isEmpty() || dateRetrait == null || dateRetrait.isEmpty()) {
+                req.setAttribute("error", "Tous les champs sont requis");
+                doGet(req, resp);
+                return;
+            }
+
+            // Créer le JSON pour l'API
+            String json = String.format("{\"montant\":%s,\"dateRetrait\":\"%s\",\"compteDepotId\":%s}", montant, dateRetrait, compteDepotId);
+
+            try {
+                boolean success = compteDepotService.retirerSurCompteDepot(json);
+                if (success) {
+                    req.setAttribute("contentPage", "/views/compte_depot/compte_depot_retrait_success.jsp");
                 } else {
                     req.setAttribute("contentPage", "/views/compte_depot/compte_depot_insertion_error.jsp");
                 }

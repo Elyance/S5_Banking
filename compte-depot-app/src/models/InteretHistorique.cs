@@ -2,8 +2,6 @@ using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-using System.ComponentModel.DataAnnotations.Schema;
-
 namespace CompteDepotService.Models
 {
     [Table("interet_historique")]
@@ -13,16 +11,17 @@ namespace CompteDepotService.Models
         [Column("id")]
         public long Id { get; set; }
 
-        [Required]
         [Column("transaction_id")]
         public long TransactionId { get; set; }
-        [ForeignKey("TransactionId")]
-        public Transaction Transaction { get; set; }
 
-        [Column("montant_interet", TypeName = "decimal(15,2)")]
+        [Column("montant_interet")]
         public decimal MontantInteret { get; set; }
 
         [Column("date_transaction")]
-        public DateTime DateTransaction { get; set; } = DateTime.Now;
+        public DateTime DateTransaction { get; set; }
+
+        // Navigation property (optional)
+        [ForeignKey("TransactionId")]
+        public virtual Transaction? Transaction { get; set; }
     }
 }

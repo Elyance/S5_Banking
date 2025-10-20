@@ -38,12 +38,13 @@
                             <div class="card h-100 border-warning">
                                 <div class="card-body text-center">
                                     <i class="fas fa-minus-circle fa-3x text-warning mb-3"></i>
-                                    <h5 class="card-title text-warning">Décaissement</h5>
+                                    <h5 class="card-title text-warning">Retrait</h5>
                                     <p class="card-text">Retirer de l'argent du compte dépôt.</p>
-                                    <button class="btn btn-warning btn-lg" disabled>
+                                    <a href="${pageContext.request.contextPath}/compte-depot/retrait?compteId=${compteId}"
+                                       class="btn btn-warning btn-lg">
                                         <i class="fas fa-minus me-2"></i>
-                                        Fonctionnalité à venir
-                                    </button>
+                                        Effectuer un retrait
+                                    </a>
                                 </div>
                             </div>
                         </div>

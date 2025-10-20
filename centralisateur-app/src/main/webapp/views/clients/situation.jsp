@@ -293,7 +293,7 @@
                                                 <i class="fas fa-plus me-1"></i>
                                                 Transaction
                                             </a>
-                                            <a href="${pageContext.request.contextPath}/compte-depot/list"
+                                            <a href="${pageContext.request.contextPath}/compte-depot/details?compteId=${compteDepot.id}"
                                                class="btn btn-outline-info btn-sm">
                                                 <i class="fas fa-eye me-1"></i>
                                                 Détails

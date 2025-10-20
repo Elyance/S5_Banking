@@ -99,6 +99,37 @@ public class CompteDepotService {
         }
     }
 
+    public boolean retirerSurCompteDepot(String jsonRetrait) throws Exception {
+        URL url = new URL("http://localhost:5126/api/CompteDepot/retrait");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("POST");
+        con.setRequestProperty("Content-Type", "application/json");
+        con.setDoOutput(true);
+
+        try (OutputStream os = con.getOutputStream()) {
+            byte[] input = jsonRetrait.getBytes("utf-8");
+            os.write(input, 0, input.length);
+        }
+
+        int code = con.getResponseCode();
+        System.out.println("Réponse HTTP retrait: " + code);
+        if (code >= 200 && code < 300) {
+            try (InputStream is = con.getInputStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String response = br.readLine();
+                System.out.println("Réponse retrait: " + response);
+            }
+            return true;
+        } else {
+            try (InputStream is = con.getErrorStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String errorResponse = br.readLine();
+                System.out.println("Erreur retrait: " + errorResponse);
+            }
+            return false;
+        }
+    }
+
     public String listerTypeOperation() throws Exception {
         URL url = new URL("http://localhost:5126/api/TypeOperation");
         HttpURLConnection con = (HttpURLConnection) url.openConnection();
@@ -276,11 +307,22 @@ public class CompteDepotService {
                     if (dateCreation == null && obj.containsKey("DateCreation")) dateCreation = obj.getString("DateCreation", null);
                     compteDepotAvecClient.setDateCreation(dateCreation);
 
-                    // Fetch tauxInteret using dateCreation
-                    if (dateCreation != null) {
-                        BigDecimal taux = getTauxInteretByDate(dateCreation);
-                        compteDepotAvecClient.setTauxInteret(taux);
+                    // tauxInteret from API response
+                    BigDecimal tauxInteret = BigDecimal.ZERO;
+                    if (obj.containsKey("tauxInteret")) {
+                        JsonValue tv = obj.get("tauxInteret");
+                        if (tv.getValueType() == JsonValue.ValueType.NUMBER) {
+                            tauxInteret = obj.getJsonNumber("tauxInteret").bigDecimalValue();
+                        } else {
+                            String s = obj.getString("tauxInteret", null);
+                            if (s != null) {
+                                try {
+                                    tauxInteret = new BigDecimal(s);
+                                } catch (NumberFormatException ignored) {}
+                            }
+                        }
                     }
+                    compteDepotAvecClient.setTauxInteret(tauxInteret);
 
                     // solde
                     if (obj.containsKey("solde")) {
@@ -352,6 +394,34 @@ public class CompteDepotService {
         }
     }
 
+    public String getTransactionHistoryWithInterests(long compteDepotId) throws Exception {
+        URL url = new URL("http://localhost:5126/api/CompteDepot/" + compteDepotId + "/transactions");
+        HttpURLConnection con = (HttpURLConnection) url.openConnection();
+        con.setRequestMethod("GET");
+        con.setRequestProperty("Accept", "application/json");
+
+        int code = con.getResponseCode();
+        System.out.println("Réponse HTTP getTransactionHistoryWithInterests: " + code);
+        if (code >= 200 && code < 300) {
+            try (InputStream is = con.getInputStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                StringBuilder response = new StringBuilder();
+                String line;
+                while ((line = br.readLine()) != null) {
+                    response.append(line.trim());
+                }
+                return response.toString();
+            }
+        } else {
+            try (InputStream is = con.getErrorStream();
+                 BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
+                String errorResponse = br.readLine();
+                System.out.println("Erreur getTransactionHistoryWithInterests: " + errorResponse);
+            }
+            throw new Exception("Erreur lors de la récupération de l'historique des transactions pour le compte " + compteDepotId);
+        }
+    }
+
     public BigDecimal getTauxInteretByDate(String date) {
         try {
             URL url = new URL("http://localhost:5126/api/CompteDepot/taux/by-date?date=" + date);
@@ -401,5 +471,5 @@ public class CompteDepotService {
     }
 
 
-    
+
 }

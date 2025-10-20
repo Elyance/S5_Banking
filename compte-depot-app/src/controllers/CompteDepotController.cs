@@ -17,7 +17,7 @@ namespace CompteDepotService.Controllers
 		}
 
         [HttpGet("list")]
-        public ActionResult<IEnumerable<CompteDepot>> GetAllComptesDepot()
+        public ActionResult<IEnumerable<object>> GetAllComptesDepot()
         {
             Console.WriteLine("Fetching all comptes depot...");
             var comptes = _service.GetAllComptesDepot();
@@ -25,7 +25,7 @@ namespace CompteDepotService.Controllers
         }
 
         [HttpGet("client/{clientId}")]
-        public ActionResult<IEnumerable<CompteDepot>> GetComptesByClientId(long clientId)
+        public ActionResult<IEnumerable<object>> GetComptesByClientId(long clientId)
         {
             var comptes = _service.GetComptesByClientId(clientId);
             return Ok(comptes);
@@ -84,6 +84,38 @@ namespace CompteDepotService.Controllers
             }
         }
 
+        // DTO pour le retrait
+        public class RetraitRequest
+        {
+            public decimal Montant { get; set; }
+            public DateTime DateRetrait { get; set; }
+            public long CompteDepotId { get; set; }
+        }
+
+        [HttpPost("retrait")]
+        public ActionResult<Transaction> Retirer([FromBody] RetraitRequest request)
+        {
+            try
+            {
+                var transaction = _service.Retirer(request.Montant, request.DateRetrait, request.CompteDepotId);
+                // Retourner un DTO pour éviter les cycles
+                var dto = new {
+                    transaction.Id,
+                    transaction.TypeOperationId,
+                    transaction.CompteDepotId,
+                    transaction.Montant,
+                    transaction.SoldeAvant,
+                    transaction.SoldeApres,
+                    transaction.DateTransaction
+                };
+                return Ok(dto);
+            }
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
+        }
+
         [HttpPost("taux")]
         public ActionResult<TauxInteret> CreateTaux([FromBody] TauxInteret taux)
         {
@@ -114,19 +146,18 @@ namespace CompteDepotService.Controllers
             return Ok(taux);
         }
 
-        [HttpGet("taux/by-date")]
-        public ActionResult<TauxInteret> GetTauxByDate([FromQuery] string date)
+        [HttpGet("{id}/transactions")]
+        public ActionResult<IEnumerable<object>> GetTransactionHistory(long id)
         {
-            if (!DateTime.TryParse(date, out DateTime parsedDate))
+            try
             {
-                return BadRequest(new { error = "Format de date invalide" });
+                var history = _service.GetTransactionHistoryWithInterests(id);
+                return Ok(history);
             }
-
-            parsedDate = DateTime.SpecifyKind(parsedDate, DateTimeKind.Utc);
-
-            var taux = _service.GetTauxByDate(parsedDate);
-            if (taux == null) return NotFound();
-            return Ok(taux);
+            catch (Exception ex)
+            {
+                return BadRequest(new { error = ex.Message });
+            }
         }
     }
 }

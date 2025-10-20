@@ -65,3 +65,9 @@ creation de persistence.xml
         </properties>
     </persistence-unit>
 </persistence>
+
+
+
+Direction(id,libelle,niveau)
+Utilisateur(login, mdp, idDirection, role)
+ActionRole(id,nomTable,action,role)

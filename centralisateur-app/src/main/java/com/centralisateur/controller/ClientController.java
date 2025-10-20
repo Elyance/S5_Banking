@@ -14,6 +14,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.time.*;
 
+import java.util.ArrayList;
+
 import com.compte_pret.dto.*;
 import com.compte_courant.dto.*;
 import com.centralisateur.dto.CompteDepotAvecClient;
@@ -74,7 +76,7 @@ public class ClientController extends HttpServlet {
                 req.setAttribute("comptesPret", comptesPretDuClient);
                 
                                 // Comptes dépôt
-                List<CompteDepotAvecClient> comptesDepot = new java.util.ArrayList<>();
+                List<CompteDepotAvecClient> comptesDepot = new ArrayList<>();
                 try {
                     String comptesDepotJson = compteDepotService.getComptesDepotByClientId(client.getId());
                     comptesDepot = compteDepotService.parseComptesDepotJson(comptesDepotJson);
@@ -97,9 +99,6 @@ public class ClientController extends HttpServlet {
                 BigDecimal resumeFinancier = totalCourant.subtract(totalPret).add(totalDepot);
                 req.setAttribute("resumeFinancier", resumeFinancier);
                 
-                // TODO: Ajouter les données des comptes et soldes ici
-                // req.setAttribute("comptes", comptesDuClient);
-                // req.setAttribute("soldeTotal", soldeTotal);
             }
             req.setAttribute("contentPage", "/views/clients/situation.jsp");
             req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
