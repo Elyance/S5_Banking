@@ -10,6 +10,7 @@ import java.util.Map;
 
 import java.time.LocalDateTime;
 import com.compte_courant.dto.TransactionDTO;
+import com.compte_courant.dto.UtilisateurDTO;
 
 @Remote
 public interface CompteCourantServiceRemote {
@@ -19,7 +20,7 @@ public interface CompteCourantServiceRemote {
     List<CompteCourantWithStatusDTO> getAllComptesWithStatus();
 
     @Transactional
-    void faireTransaction(Long idCompte, Long idTypeOperation, BigDecimal montant,String description, LocalDateTime dateTransaction);
+    void faireTransaction(UtilisateurDTO utilisateur,Long idCompte, Long idTypeOperation, BigDecimal montant,String description, LocalDateTime dateTransaction);
 
     Map<Long, String> getAllTypeOperations();
 
@@ -35,7 +36,7 @@ public interface CompteCourantServiceRemote {
     void mettreAJourDecouvertAutorise(BigDecimal nouveauDecouvert, LocalDateTime dateEffective);
 
     @Transactional
-    void validerTransaction(Long idTransaction);
+    void validerTransaction(UtilisateurDTO utilisateur, Long idTransaction);
 
     @Transactional
     void rejeterTransaction(Long idTransaction);

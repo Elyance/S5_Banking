@@ -1,4 +1,3 @@
-com/centralisateur/controller/AdminController.class
 com/centralisateur/controller/CompteDepotController.class
 com/centralisateur/repository/AdminBanqueRepository.class
 com/centralisateur/service/CompteCourantService.class
@@ -9,6 +8,7 @@ com/centralisateur/entity/Client.class
 com/centralisateur/repository/StatutClientRepository.class
 com/centralisateur/entity/AdminBanque.class
 com/centralisateur/dto/ClientWithStatusDTO.class
+com/centralisateur/service/AuthService.class
 com/centralisateur/controller/DashboardController.class
 com/centralisateur/dto/CompteCourantAvecClient.class
 com/centralisateur/service/ClientService.class
@@ -17,6 +17,7 @@ com/centralisateur/dto/CompteDepotAvecClient.class
 com/centralisateur/repository/MvtClientRepository.class
 com/centralisateur/entity/StatutClient.class
 com/centralisateur/service/AdminService.class
+com/centralisateur/controller/AuthController.class
 com/centralisateur/service/ComptePretService.class
 com/centralisateur/controller/ComptePretController.class
 com/centralisateur/dto/ComptePretAvecClient.class

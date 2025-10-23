@@ -4,11 +4,13 @@ import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import java.math.BigDecimal;
 import com.centralisateur.service.CompteCourantService;
+import com.centralisateur.service.AuthService;
 import com.centralisateur.service.ClientService;
 import com.centralisateur.dto.CompteCourantAvecClient;
 import com.centralisateur.entity.Client;
@@ -29,6 +31,18 @@ public class CompteCourantController extends HttpServlet {
     
     @Inject
 	private ClientService clientService;
+
+    // Simuler l'utilisateur connecté (à remplacer par la gestion réelle des utilisateurs)
+
+    // private final UtilisateurDTO utilisateur = (AuthSercice) session.getAttribute("utilisateur"); // Exemple d'utilisateur avec rôle administrateur
+    private UtilisateurDTO getUtilisateurFromSession(HttpServletRequest req) {
+        HttpSession session = req.getSession(false);
+        if (session != null) {
+            AuthService authService = (AuthService) session.getAttribute("authService");
+            return (UtilisateurDTO) authService.getCurrentUser();
+        }
+        return null;
+    }
 
 	@Override
 	protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -66,12 +80,16 @@ public class CompteCourantController extends HttpServlet {
 
         } else if ("/compte-courant/transaction".equals(req.getServletPath())) {
             String compteId = req.getParameter("compteId");
+            String error = req.getParameter("error");
             if (compteId != null) {
                 CompteCourantWithStatusDTO compte = compteCourantService.getCompteById(Long.parseLong(compteId));
                 Map<Long, String> typeOperations = compteCourantService.getAllTypeOperations();
                 req.setAttribute("compte", compte);
                 req.setAttribute("typeOperations", typeOperations);
                 req.setAttribute("decouvertAutorise", compteCourantService.getDecouvertValueByDate(compte.getDateCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+                if (error != null) {
+                    req.setAttribute("errorMessage", error);
+                }
                 req.setAttribute("contentPage", "/views/compte_courant/transaction.jsp");
                 req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
                 return;
@@ -81,12 +99,16 @@ public class CompteCourantController extends HttpServlet {
             }
         } else if ("/compte-courant/transactions/list".equals(req.getServletPath())) {
             String compteId = req.getParameter("compteId");
+            String error = req.getParameter("error");
             if (compteId != null) {
                 List<TransactionDTO> transactions = compteCourantService.getTransactionsByCompteId(Long.parseLong(compteId));
                 CompteCourantWithStatusDTO compte = compteCourantService.getCompteById(Long.parseLong(compteId));
                 req.setAttribute("compte", compte);
                 req.setAttribute("transactions", transactions);
                 req.setAttribute("decouvertAutorise", compteCourantService.getDecouvertValueByDate(compte.getDateCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+                if (error != null) {
+                    req.setAttribute("errorMessage", error);
+                }
                 req.setAttribute("contentPage", "/views/compte_courant/transactions_list.jsp");
                 req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
                 return;
@@ -191,11 +213,17 @@ public class CompteCourantController extends HttpServlet {
                     return;
                 }
 
-                // Appel du service métier pour effectuer la transaction
-                compteCourantService.faireTransaction(Long.parseLong(compteId), Long.parseLong(typeOperationId), montant, description, dateTransaction);
+                try {
+                    // Appel du service métier pour effectuer la transaction
+                    
+                    compteCourantService.faireTransaction(getUtilisateurFromSession(req), Long.parseLong(compteId), Long.parseLong(typeOperationId), montant, description, dateTransaction);
 
-                // Redirige vers une page de succès ou la liste des comptes
-                resp.sendRedirect(req.getContextPath() + "/compte-courant/success");
+                    // Redirige vers une page de succès ou la liste des comptes
+                    resp.sendRedirect(req.getContextPath() + "/compte-courant/success");
+                } catch (Exception e) {
+                    // En cas d'erreur, rediriger vers la page de transaction avec l'erreur
+                    resp.sendRedirect(req.getContextPath() + "/compte-courant/transaction?compteId=" + compteId + "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
+                }
 
             } else if ("/compte-courant/preview".equals(req.getServletPath())) {
                 String clientId = req.getParameter("clientId");
@@ -258,9 +286,14 @@ public class CompteCourantController extends HttpServlet {
                     return;
                 }
                 Long transactionId = Long.parseLong(transactionIdStr);
-                compteCourantService.validerTransaction(transactionId);
-                // Rediriger vers la liste des transactions du compte
-                resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr);
+                try {
+                    compteCourantService.validerTransaction(getUtilisateurFromSession(req), transactionId);
+                    // Rediriger vers la liste des transactions du compte
+                    resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr);
+                } catch (Exception e) {
+                    // En cas d'erreur, rediriger vers la liste des transactions avec l'erreur
+                    resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr + "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
+                }
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return; 

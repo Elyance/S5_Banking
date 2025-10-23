@@ -1,5 +1,35 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c" %>
+<%@ page import="com.centralisateur.service.AuthService" %>
+<%@ page import="com.compte_courant.dto.UtilisateurDTO" %>
+
+<!-- Message de bienvenue personnalisé -->
+<%
+    HttpSession currentSession = request.getSession(false);
+    if (currentSession != null) {
+        AuthService authService = (AuthService) currentSession.getAttribute("authService");
+        if (authService != null && authService.isLoggedIn()) {
+            UtilisateurDTO currentUser = authService.getCurrentUser();
+%>
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="alert alert-info border-0 shadow-sm">
+            <div class="d-flex align-items-center">
+                <div class="avatar-circle me-3">
+                    <%= currentUser.getLogin().substring(0, 1).toUpperCase() %>
+                </div>
+                <div>
+                    <h5 class="mb-1">Bienvenue, <%= currentUser.getLogin() %> !</h5>
+                    <p class="mb-0 text-muted">Vous êtes connecté au système bancaire</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<%
+        }
+    }
+%>
 
 <!-- Vue d'ensemble -->
 <div class="row mb-4">

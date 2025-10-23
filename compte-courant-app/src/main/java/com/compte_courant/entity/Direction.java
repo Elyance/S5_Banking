@@ -1,0 +1,27 @@
+package com.compte_courant.entity;
+
+import jakarta.persistence.*;
+
+@Entity
+@Table(name = "direction")
+public class Direction {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
+
+    @Column(nullable = false, length = 100)
+    private String libelle;
+
+    @Column(nullable = false)
+    private Integer niveau;
+
+    // Getters and setters
+    public Long getId() { return id; }
+    public void setId(Long id) { this.id = id; }
+
+    public String getLibelle() { return libelle; }
+    public void setLibelle(String libelle) { this.libelle = libelle; }
+
+    public Integer getNiveau() { return niveau; }
+    public void setNiveau(Integer niveau) { this.niveau = niveau; }
+}

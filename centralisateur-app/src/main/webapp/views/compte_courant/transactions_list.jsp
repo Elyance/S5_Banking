@@ -15,8 +15,9 @@
                 </div>
             </div>
 
-            <div class="card mb-4">
-                <div class="card-body">
+            <c:if test="${not empty errorMessage}">
+                <div class="alert alert-danger mt-3">${errorMessage}</div>
+            </c:if>
                     <div class="mb-3">
                         <strong>Solde actuel :</strong>
                         <c:if test="${not empty compte}">

@@ -16,6 +16,9 @@
         <class>com.compteCourant.entity.CompteCourant</class>
         <class>com.compteCourant.entity.Transaction</class>
         <class>com.compteCourant.entity.StatutCompteCourantMvt</class>
+        <class>com.compte_courant.entity.Utilisateur</class>
+        <class>com.compte_courant.entity.Role</class>
+        <class>com.compte_courant.entity.ActionRole</class>
 
         <!-- Propriétés Hibernate pour WildFly -->
         <properties>

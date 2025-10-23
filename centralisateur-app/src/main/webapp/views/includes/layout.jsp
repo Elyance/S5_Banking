@@ -1,5 +1,20 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ page import="com.centralisateur.service.AuthService" %>
+<%@ page import="com.compte_courant.dto.UtilisateurDTO" %>
+
+<%
+    HttpSession currentSession = request.getSession(false);
+    UtilisateurDTO currentUser = null;
+    boolean isLoggedIn = false;
+    if (currentSession != null) {
+        AuthService authService = (AuthService) currentSession.getAttribute("authService");
+        if (authService != null && authService.isLoggedIn()) {
+            currentUser = authService.getCurrentUser();
+            isLoggedIn = true;
+        }
+    }
+%>
 
 <!-- Template de base avec sidebar moderne -->
 <!DOCTYPE html>
@@ -1056,14 +1071,21 @@
             <h1 class="page-title">${pageTitle != null ? pageTitle : 'Dashboard'}</h1>
             
             <div class="header-actions">
-                <button class="btn btn-outline-primary btn-sm">
-                    <i class="fas fa-bell me-1"></i>
-                    Notifications
-                </button>
-                <button class="btn btn-primary btn-sm">
+                <% if (isLoggedIn && currentUser != null) { %>
+                <span class="text-muted me-3">
                     <i class="fas fa-user me-1"></i>
-                    Admin
-                </button>
+                    <%= currentUser.getLogin() %>
+                </span>
+                <a href="${pageContext.request.contextPath}/auth/logout" class="btn btn-outline-danger btn-sm">
+                    <i class="fas fa-sign-out-alt me-1"></i>
+                    Déconnexion
+                </a>
+                <% } else { %>
+                <a href="${pageContext.request.contextPath}/login" class="btn btn-primary btn-sm">
+                    <i class="fas fa-sign-in-alt me-1"></i>
+                    Connexion
+                </a>
+                <% } %>
             </div>
         </header>
         

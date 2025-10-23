@@ -44,6 +44,9 @@ public class CompteCourantService implements CompteCourantServiceRemote {
     @Inject
     private TransactionStatutMouvementRepository transactionStatutMouvementRepository;
 
+    @Inject
+    private ActionRoleRepository actionRoleRepository;
+
 
     // creer un nouveau compte courant
     @Override
@@ -77,37 +80,46 @@ public class CompteCourantService implements CompteCourantServiceRemote {
 
     @Override
     @Transactional
-    public void faireTransaction(Long idCompte, Long idTypeOperation, BigDecimal montant, String description, LocalDateTime dateTransaction) {
-        CompteCourant compte = compteCourantRepository.findById(idCompte);
-        if (compte == null) {
-            throw new IllegalArgumentException("Compte courant non trouvé");
-        }
-        TypeOperation typeOperation = typeOperationRepository.findById(idTypeOperation);
-        if (typeOperation == null) {
-            throw new IllegalArgumentException("Type d'opération non trouvé");
-        }
-        if (dateTransaction == null) {
-            dateTransaction = LocalDateTime.now();
-        }
+    public void faireTransaction(UtilisateurDTO utilisateur,Long idCompte, Long idTypeOperation, BigDecimal montant, String description, LocalDateTime dateTransaction) {
+        if (utilisateur.getRole() == null) {
+            throw new SecurityException("Utilisateur non autorisé à effectuer quoi que ce soit");
+        } else if (utilisateur.getRole() >= actionRoleRepository.findByNomTableAndAction("transactions", "CREATE").getRole()) {
+            // autorisé à faire la transaction
 
-        // Créer la transaction sans mettre à jour le solde
-        Transaction transaction = new Transaction();
-        transaction.setCompteCourantId(idCompte);
-        transaction.setTypeOperationId(idTypeOperation);
-        transaction.setMontant(montant);
-        transaction.setDescription(description);
-        transaction.setDateTransaction(dateTransaction);
-        
-        // Enregistrer la transaction
-        transactionRepository.save(transaction);
+            CompteCourant compte = compteCourantRepository.findById(idCompte);
+            if (compte == null) {
+                throw new IllegalArgumentException("Compte courant non trouvé");
+            }
+            TypeOperation typeOperation = typeOperationRepository.findById(idTypeOperation);
+            if (typeOperation == null) {
+                throw new IllegalArgumentException("Type d'opération non trouvé");
+            }
+            if (dateTransaction == null) {
+                dateTransaction = LocalDateTime.now();
+            }
 
-        // Créer le mouvement de statut "CREE" (id=1)
-        StatutTransaction statutCree = statutTransactionRepository.findById(1L);
-        if (statutCree == null) {
-            throw new IllegalArgumentException("Statut 'CREE' non trouvé");
+            // Créer la transaction sans mettre à jour le solde
+            Transaction transaction = new Transaction();
+            transaction.setCompteCourantId(idCompte);
+            transaction.setTypeOperationId(idTypeOperation);
+            transaction.setMontant(montant);
+            transaction.setDescription(description);
+            transaction.setDateTransaction(dateTransaction);
+            
+            // Enregistrer la transaction
+            transactionRepository.save(transaction);
+
+            // Créer le mouvement de statut "CREE" (id=1)
+            StatutTransaction statutCree = statutTransactionRepository.findById(1L);
+            if (statutCree == null) {
+                throw new IllegalArgumentException("Statut 'CREE' non trouvé");
+            }
+            TransactionStatutMouvement mouvement = new TransactionStatutMouvement(statutCree, transaction, LocalDateTime.now());
+            transactionStatutMouvementRepository.save(mouvement);
+        } else {
+            throw new SecurityException("Utilisateur non autorisé à effectuer des transactions");
+
         }
-        TransactionStatutMouvement mouvement = new TransactionStatutMouvement(statutCree, transaction, LocalDateTime.now());
-        transactionStatutMouvementRepository.save(mouvement);
     }
 
     @Override
@@ -193,32 +205,40 @@ public class CompteCourantService implements CompteCourantServiceRemote {
     }
 
     @Override
-    public void validerTransaction(Long idTransaction) {
-        StatutTransaction statutValide = statutTransactionRepository.findById(2L); // Supposons que l'ID 2 correspond au statut "VALIDÉ"
-        Transaction transaction = transactionRepository.findById(idTransaction);
-        if (transaction == null) {
-            throw new IllegalArgumentException("Transaction non trouvée");
-        }
-        // Mettre à jour le solde du compte courant
-        CompteCourant compte = compteCourantRepository.findById(transaction.getCompteCourantId());
-        if (compte == null) {
-            throw new IllegalArgumentException("Compte courant non trouvé");
-        }
+    public void validerTransaction(UtilisateurDTO utilisateurDTO, Long idTransaction) {
+        if (utilisateurDTO.getRole() == null) {
+            throw new SecurityException("Utilisateur non autorisé à effectuer quoi que ce soit");
+        } else if (utilisateurDTO.getRole() >= actionRoleRepository.findByNomTableAndAction("transactions", "VALIDATE").getRole()) {
+            StatutTransaction statutValide = statutTransactionRepository.findById(2L); // Supposons que l'ID 2 correspond au statut "VALIDÉ"
+            Transaction transaction = transactionRepository.findById(idTransaction);
+            if (transaction == null) {
+                throw new IllegalArgumentException("Transaction non trouvée");
+            }
+            // Mettre à jour le solde du compte courant
+            CompteCourant compte = compteCourantRepository.findById(transaction.getCompteCourantId());
+            if (compte == null) {
+                throw new IllegalArgumentException("Compte courant non trouvé");
+            }
 
-        TypeOperation typeOperation = typeOperationRepository.findById(transaction.getTypeOperationId());
-        if (typeOperation == null) {
-            throw new IllegalArgumentException("Type d'opération non trouvé");
-        }
-        if (typeOperation.equals(typeOperationRepository.findById(1L))) {
-            compte.setSolde(compte.getSolde().add(transaction.getMontant()));
+            TypeOperation typeOperation = typeOperationRepository.findById(transaction.getTypeOperationId());
+            if (typeOperation == null) {
+                throw new IllegalArgumentException("Type d'opération non trouvé");
+            }
+            if (typeOperation.equals(typeOperationRepository.findById(1L))) {
+                compte.setSolde(compte.getSolde().add(transaction.getMontant()));
+            } else {
+                compte.setSolde(compte.getSolde().subtract(transaction.getMontant()));
+            }
+            compteCourantRepository.save(compte);
+
+            // Créer le mouvement de statut "VALIDÉ"
+            TransactionStatutMouvement mouvement = new TransactionStatutMouvement(statutValide, transaction, LocalDateTime.now());
+            transactionStatutMouvementRepository.save(mouvement);
         } else {
-            compte.setSolde(compte.getSolde().subtract(transaction.getMontant()));
+            throw new SecurityException("Utilisateur non autorisé à valider des transactions");
+            // autorisé à valider la transaction
         }
-        compteCourantRepository.save(compte);
-
-        // Créer le mouvement de statut "VALIDÉ"
-        TransactionStatutMouvement mouvement = new TransactionStatutMouvement(statutValide, transaction, LocalDateTime.now());
-        transactionStatutMouvementRepository.save(mouvement);
+        
     }
 
     @Override

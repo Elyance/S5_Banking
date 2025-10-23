@@ -35,8 +35,8 @@ public class CompteCourantService {
         return getRemote().getAllComptesWithStatus();
     }
 
-    public void faireTransaction(Long idCompte, Long idTypeOperation, BigDecimal montant, String description, LocalDateTime dateTransaction) {
-        getRemote().faireTransaction(idCompte, idTypeOperation, montant, description, dateTransaction);
+    public void faireTransaction(UtilisateurDTO utilisateur,Long idCompte, Long idTypeOperation, BigDecimal montant, String description, LocalDateTime dateTransaction) {
+        getRemote().faireTransaction(utilisateur,idCompte, idTypeOperation, montant, description, dateTransaction);
     }
 
     public Map<Long, String> getAllTypeOperations() {
@@ -63,7 +63,7 @@ public class CompteCourantService {
         getRemote().mettreAJourDecouvertAutorise(nouveauDecouvert, dateEffective);
     }
 
-    public void validerTransaction(Long idTransaction) {
-        getRemote().validerTransaction(idTransaction);
+    public void validerTransaction(UtilisateurDTO utilisateur, Long idTransaction) {
+        getRemote().validerTransaction(utilisateur, idTransaction);
     }
 }
