@@ -75,13 +75,13 @@
                                     <c:when test="${not empty resumeFinancier}">
                                         <div class="display-4 text-success fw-bold mb-2">
                                             <i class="fas fa-euro-sign me-2"></i>
-                                            <fmt:formatNumber value="${resumeFinancier}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                            <fmt:formatNumber value="${resumeFinancier}" type="number" minFractionDigits="2" maxFractionDigits="2" /> Ariary
                                         </div>
                                     </c:when>
                                     <c:otherwise>
                                         <div class="display-4 text-success fw-bold mb-2">
                                             <i class="fas fa-euro-sign me-2"></i>
-                                            0,00 €
+                                            0,00 Ariary
                                         </div>
                                     </c:otherwise>
                                 </c:choose>
@@ -127,7 +127,7 @@
                                             <div class="col-6">
                                                 <small class="text-muted">Solde actuel</small>
                                                 <div class="fw-bold text-primary fs-5">
-                                                    <fmt:formatNumber value="${compte.solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                                    <fmt:formatNumber value="${compte.solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> Ariary
                                                 </div>
                                             </div>
                                         </div>
@@ -136,7 +136,7 @@
                                             <div class="col-6">
                                                 <small class="text-muted">Découvert autorisé</small>
                                                 <div class="fw-bold">
-                                                    <fmt:formatNumber value="${compte.decouvertAutorise}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                                    <fmt:formatNumber value="${compte.decouvertAutorise}" type="number" minFractionDigits="2" maxFractionDigits="2" /> Ariary
                                                 </div>
                                             </div>
                                             <div class="col-6">
@@ -192,7 +192,7 @@
                                             <div class="col-6">
                                                 <small class="text-muted">Montant restant</small>
                                                 <div class="fw-bold text-warning fs-5">
-                                                    <fmt:formatNumber value="${comptePret.soldeRestantDu}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                                    <fmt:formatNumber value="${comptePret.soldeRestantDu}" type="number" minFractionDigits="2" maxFractionDigits="2" /> Ariary
                                                 </div>
                                             </div>
                                         </div>
@@ -261,7 +261,7 @@
                                             <div class="col-6">
                                                 <small class="text-muted">Solde actuel</small>
                                                 <div class="fw-bold text-info fs-5">
-                                                    <fmt:formatNumber value="${compteDepot.solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €
+                                                    <fmt:formatNumber value="${compteDepot.solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> Ariary
                                                 </div>
                                             </div>
                                         </div>

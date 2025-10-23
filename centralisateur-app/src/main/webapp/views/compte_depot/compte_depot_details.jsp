@@ -53,9 +53,9 @@
                                 <tr class="<%= rowClass %>">
                                     <td><%= date %></td>
                                     <td><%= typeOp %></td>
-                                    <td><%= montant %> €</td>
-                                    <td><%= soldeAvant %> €</td>
-                                    <td><%= soldeApres %> €</td>
+                                    <td><%= montant %> Ariary</td>
+                                    <td><%= soldeAvant %> Ariary</td>
+                                    <td><%= soldeApres %> Ariary</td>
                                     <td><%= "interest".equals(type) ? "Intérêt calculé" : "-" %></td>
                                 </tr>
                                 <%

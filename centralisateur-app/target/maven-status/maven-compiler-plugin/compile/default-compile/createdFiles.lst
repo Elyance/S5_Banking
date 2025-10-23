@@ -21,5 +21,6 @@ com/centralisateur/controller/AuthController.class
 com/centralisateur/service/ComptePretService.class
 com/centralisateur/controller/ComptePretController.class
 com/centralisateur/dto/ComptePretAvecClient.class
+com/centralisateur/service/ChangeService.class
 com/centralisateur/controller/CompteController.class
 com/centralisateur/entity/MvtClient.class

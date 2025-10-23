@@ -66,8 +66,13 @@ creation de persistence.xml
     </persistence-unit>
 </persistence>
 
-
+---Alea 2
 
 Direction(id,libelle,niveau)
 Utilisateur(login, mdp, idDirection, role)
 ActionRole(id,nomTable,action,role)
+
+---Alea 3
+copier un fichier de nous a docker on a besoin de l'id du conteneur
+docker ps pour voir tous les conteneur
+ouvrir le terminal: docker exec -it <container_id_or_name> /bin/bash

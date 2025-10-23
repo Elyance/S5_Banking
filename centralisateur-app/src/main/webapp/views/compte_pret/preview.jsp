@@ -77,7 +77,7 @@
                         <div class="mb-3">
                             <label class="form-label fw-bold">Solde initial</label>
                             <p class="form-control-plaintext">
-                                <fmt:formatNumber value="${soldeInitial}" type="currency" currencySymbol="€"/>
+                                <fmt:formatNumber value="${soldeInitial}" type="currency" currencySymbol="Ariary"/>
                             </p>
                         </div>
                         <div class="mb-3">
