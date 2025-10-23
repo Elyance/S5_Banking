@@ -23,7 +23,7 @@ import java.time.format.DateTimeFormatter;
 
 
 
-@WebServlet(name = "CompteCourantController", urlPatterns = {"/compte-courant/create","/compte-courant/success","/compte-courant/list","/compte-courant/transaction","/compte-courant/preview","/compte-courant/confirm","/compte-courant/transactions/list","/compte-courant/decouvert"})
+@WebServlet(name = "CompteCourantController", urlPatterns = {"/compte-courant/create","/compte-courant/success","/compte-courant/list","/compte-courant/transaction","/compte-courant/preview","/compte-courant/confirm","/compte-courant/transactions/list","/compte-courant/decouvert","/compte-courant/valider"})
 public class CompteCourantController extends HttpServlet {
 	private final CompteCourantService compteCourantService = new CompteCourantService();
     
@@ -250,6 +250,17 @@ public class CompteCourantController extends HttpServlet {
 
                 req.setAttribute("contentPage", "/views/compte_courant/success.jsp");
                 req.getRequestDispatcher("/views/includes/layout.jsp").forward(req, resp);
+            } else if ("/compte-courant/valider".equals(req.getServletPath())) {
+                String transactionIdStr = req.getParameter("transactionId");
+                String compteIdStr = req.getParameter("compteId");
+                if (transactionIdStr == null || compteIdStr == null) {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "Paramètres manquants");
+                    return;
+                }
+                Long transactionId = Long.parseLong(transactionIdStr);
+                compteCourantService.validerTransaction(transactionId);
+                // Rediriger vers la liste des transactions du compte
+                resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr);
             } else {
                 resp.sendError(HttpServletResponse.SC_NOT_FOUND);
                 return; 

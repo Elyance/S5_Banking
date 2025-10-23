@@ -34,4 +34,12 @@ public interface CompteCourantServiceRemote {
     @Transactional
     void mettreAJourDecouvertAutorise(BigDecimal nouveauDecouvert, LocalDateTime dateEffective);
 
+    @Transactional
+    void validerTransaction(Long idTransaction);
+
+    @Transactional
+    void rejeterTransaction(Long idTransaction);
+
+    boolean isValidateOrNot(Long idTransaction);
+
 }

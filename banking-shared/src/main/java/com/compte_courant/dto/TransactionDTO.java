@@ -19,6 +19,7 @@ public class TransactionDTO implements Serializable {
     private String description;
     private LocalDateTime dateTransaction;
     private String dateTransactionFormatted;
+    private boolean isValidated;
 
     // Getters and Setters
     public Long getId() {
@@ -97,5 +98,11 @@ public class TransactionDTO implements Serializable {
     }
     public void setSoldeApresTransaction(BigDecimal soldeApresTransaction) {
         this.soldeApresTransaction = soldeApresTransaction;
+    }
+    public boolean isValidated() {
+        return isValidated;
+    }
+    public void setValidated(boolean isValidated) {
+        this.isValidated = isValidated;
     }
 }

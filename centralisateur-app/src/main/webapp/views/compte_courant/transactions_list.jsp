@@ -33,6 +33,7 @@
                                 <th>Solde avant</th>
                                 <th>Solde après</th>
                                 <th>Description</th>
+                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -44,6 +45,18 @@
                                     <td><fmt:formatNumber value="${t.soldeAvantTransaction}" type="number" minFractionDigits="2" maxFractionDigits="2"/></td>
                                     <td><fmt:formatNumber value="${t.soldeApresTransaction}" type="number" minFractionDigits="2" maxFractionDigits="2"/></td>
                                     <td><c:out value="${t.description}"/></td>
+                                    <td>
+                                        <c:if test="${not t.validated}">
+                                            <form action="${pageContext.request.contextPath}/compte-courant/valider" method="post" style="display:inline;">
+                                                <input type="hidden" name="transactionId" value="${t.id}" />
+                                                <input type="hidden" name="compteId" value="${compte.id}" />
+                                                <button type="submit" class="btn btn-primary btn-sm">Valider</button>
+                                            </form>
+                                        </c:if>
+                                        <c:if test="${t.validated}">
+                                            <span class="text-success">Validée</span>
+                                        </c:if>
+                                    </td>
                                 </tr>
                             </c:forEach>
                         </tbody>

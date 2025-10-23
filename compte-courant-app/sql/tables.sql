@@ -64,3 +64,21 @@ ADD COLUMN decouvert_autorise DECIMAL(15,2) DEFAULT 0.00;
 INSERT INTO historique_devouvert_autorise (value, date_modification) VALUES 
 (50000.00, '2024-01-01 00:00:00'),
 (100000.00, '2024-06-01 00:00:00');
+
+
+CREATE TABLE IF NOT EXISTS statut_transaction (
+    id BIGSERIAL PRIMARY KEY,
+    libelle VARCHAR(50) UNIQUE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS transaction_statut_mouvement (
+    id BIGSERIAL PRIMARY KEY,
+    id_statut_transaction BIGINT NOT NULL REFERENCES statut_transaction(id),
+    id_transaction BIGINT NOT NULL REFERENCES transactions(id),
+    date_mouvement TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+INSERT INTO statut_transaction (libelle) VALUES 
+('CREE'),
+('VALIDE'),
+('REJETE');

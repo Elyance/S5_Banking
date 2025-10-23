@@ -62,4 +62,8 @@ public class CompteCourantService {
     public void mettreAJourDecouvertAutorise(BigDecimal nouveauDecouvert, LocalDateTime dateEffective) {
         getRemote().mettreAJourDecouvertAutorise(nouveauDecouvert, dateEffective);
     }
+
+    public void validerTransaction(Long idTransaction) {
+        getRemote().validerTransaction(idTransaction);
+    }
 }
