@@ -80,12 +80,7 @@ public class CompteCourantService implements CompteCourantServiceRemote {
 
     @Override
     @Transactional
-    public void faireTransaction(UtilisateurDTO utilisateur,Long idCompte, Long idTypeOperation, BigDecimal montant, String description, LocalDateTime dateTransaction) {
-        if (utilisateur.getRole() == null) {
-            throw new SecurityException("Utilisateur non autorisé à effectuer quoi que ce soit");
-        } else if (utilisateur.getRole() >= actionRoleRepository.findByNomTableAndAction("transactions", "CREATE").getRole()) {
-            // autorisé à faire la transaction
-
+    public void faireTransaction(Long idCompte, Long idTypeOperation, BigDecimal montant, String description, LocalDateTime dateTransaction) {
             CompteCourant compte = compteCourantRepository.findById(idCompte);
             if (compte == null) {
                 throw new IllegalArgumentException("Compte courant non trouvé");
@@ -116,10 +111,6 @@ public class CompteCourantService implements CompteCourantServiceRemote {
             }
             TransactionStatutMouvement mouvement = new TransactionStatutMouvement(statutCree, transaction, LocalDateTime.now());
             transactionStatutMouvementRepository.save(mouvement);
-        } else {
-            throw new SecurityException("Utilisateur non autorisé à effectuer des transactions");
-
-        }
     }
 
     @Override
@@ -205,10 +196,7 @@ public class CompteCourantService implements CompteCourantServiceRemote {
     }
 
     @Override
-    public void validerTransaction(UtilisateurDTO utilisateurDTO, Long idTransaction) {
-        if (utilisateurDTO.getRole() == null) {
-            throw new SecurityException("Utilisateur non autorisé à effectuer quoi que ce soit");
-        } else if (utilisateurDTO.getRole() >= actionRoleRepository.findByNomTableAndAction("transactions", "VALIDATE").getRole()) {
+    public void validerTransaction(Long idTransaction) {
             StatutTransaction statutValide = statutTransactionRepository.findById(2L); // Supposons que l'ID 2 correspond au statut "VALIDÉ"
             Transaction transaction = transactionRepository.findById(idTransaction);
             if (transaction == null) {
@@ -234,11 +222,6 @@ public class CompteCourantService implements CompteCourantServiceRemote {
             // Créer le mouvement de statut "VALIDÉ"
             TransactionStatutMouvement mouvement = new TransactionStatutMouvement(statutValide, transaction, LocalDateTime.now());
             transactionStatutMouvementRepository.save(mouvement);
-        } else {
-            throw new SecurityException("Utilisateur non autorisé à valider des transactions");
-            // autorisé à valider la transaction
-        }
-        
     }
 
     @Override
