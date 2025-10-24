@@ -15,19 +15,19 @@ public class ChangeService {
     private ChangeServiceRemote changeService;
 
     // Méthodes pour interagir avec le service de change distant
-    public List<ChangeDTO> loadChangeFromCSV() {
-        return changeService.loadChangeFromCSV();
+    public List<ChangeDTO> loadChangeFromCSV(String path) {
+        return changeService.loadChangeFromCSV(path);
     }
 
-    public ChangeDTO rechercherChange(String devise, java.time.LocalDate date) {
-        return changeService.rechercherChange(devise, date);
+    public ChangeDTO rechercherChange(String path,String devise, java.time.LocalDate date) {
+        return changeService.rechercherChange(path, devise, date);
     }
 
-    public List<String> getListeDevises() {
-        return changeService.getListeDevises();
+    public List<String> getListeDevises(String path) {
+        return changeService.getListeDevises(path);
     }
 
-    public BigDecimal calculate(BigDecimal montant, String devise, LocalDate date) {
-        return changeService.calculate(montant, devise,date);
+    public BigDecimal calculate(String path, BigDecimal montant, String devise, LocalDate date) {
+        return changeService.calculate(path, montant, devise, date);
     }
 }
