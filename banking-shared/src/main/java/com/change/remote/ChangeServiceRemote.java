@@ -9,8 +9,8 @@ import java.math.BigDecimal;
 
 @Remote
 public interface ChangeServiceRemote {
-    List<ChangeDTO> loadChangeFromCSV();
-    ChangeDTO rechercherChange(String devise, LocalDate date);
-    List<String> getListeDevises();
-    BigDecimal calculate(BigDecimal montant, String devise, LocalDate date);
+    List<ChangeDTO> loadChangeFromCSV(String path);
+    ChangeDTO rechercherChange(String path,String devise, LocalDate date);
+    List<String> getListeDevises(String path);
+    BigDecimal calculate(String path, BigDecimal montant, String devise, LocalDate date);
 } 

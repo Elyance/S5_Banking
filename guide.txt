@@ -75,4 +75,5 @@ ActionRole(id,nomTable,action,role)
 ---Alea 3
 copier un fichier de nous a docker on a besoin de l'id du conteneur
 docker ps pour voir tous les conteneur
-ouvrir le terminal: docker exec -it <container_id_or_name> /bin/bash
+ouvrir le terminal: docker exec -it change /bin/bash
+docker run -d -p 8080:6060 -p 9990:9990 --name change-container change

@@ -16,9 +16,9 @@ import com.change.remote.ChangeServiceRemote;
 @Stateless
 public class ChangeService implements ChangeServiceRemote {
     @Override
-    public List<ChangeDTO> loadChangeFromCSV() {
+    public List<ChangeDTO> loadChangeFromCSV(String path) {
         List<ChangeDTO> changes = new ArrayList<>();
-        try (InputStream is = getClass().getClassLoader().getResourceAsStream("change.csv");
+        try (InputStream is = getClass().getClassLoader().getResourceAsStream(path);
             BufferedReader br = new BufferedReader(new InputStreamReader(is))) {
 
             String line;
@@ -48,9 +48,9 @@ public class ChangeService implements ChangeServiceRemote {
         return changes;
     }
 
-    public ChangeDTO rechercherChange(String devise, LocalDate date) {
+    public ChangeDTO rechercherChange(String path,String devise, LocalDate date) {
         System.out.println("Recherche de change pour devise: " + devise + ", date: " + date);
-        List<ChangeDTO> changes = loadChangeFromCSV();
+        List<ChangeDTO> changes = loadChangeFromCSV(path);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         for (ChangeDTO changeDTO : changes) {
             // Parse les dates String en LocalDate pour la comparaison
@@ -67,13 +67,13 @@ public class ChangeService implements ChangeServiceRemote {
     }
 
     @Override
-    public BigDecimal calculate(BigDecimal montant, String devise, LocalDate date) {
+    public BigDecimal calculate(String path,BigDecimal montant, String devise, LocalDate date) {
         System.out.println("Calculating for montant: " + montant + ", devise: " + devise);
         if ("Ariary".equals(devise)) {
             System.out.println("Devise is Ariary, returning montant as is: " + montant);
             return montant;
         }
-        ChangeDTO changeDTO = rechercherChange(devise, date);
+        ChangeDTO changeDTO = rechercherChange(path, devise, date);
         if (changeDTO != null) {
             BigDecimal result = montant.multiply(changeDTO.getChange());
             System.out.println("Change found: " + changeDTO + ", result: " + result);
@@ -85,8 +85,8 @@ public class ChangeService implements ChangeServiceRemote {
     }
 
     @Override
-    public List<String> getListeDevises() {
-        List<ChangeDTO> changes = loadChangeFromCSV();
+    public List<String> getListeDevises(String path) {
+        List<ChangeDTO> changes = loadChangeFromCSV(path);
         System.out.println("Loaded changes: " + changes);
         List<String> devises = new ArrayList<>();
         devises.add("Ariary");

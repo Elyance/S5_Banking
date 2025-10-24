@@ -84,7 +84,8 @@ public class CompteCourantController extends HttpServlet {
             return;
 
         } else if ("/compte-courant/transaction".equals(req.getServletPath())) {
-            List<String> devises = changeService.getListeDevises();
+            String path = "change.csv";
+            List<String> devises = changeService.getListeDevises(path);
             String compteId = req.getParameter("compteId");
             String error = req.getParameter("error");
             if (compteId != null) {
@@ -180,6 +181,7 @@ public class CompteCourantController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
+            String path = "change.csv";
             if ("/compte-courant/create".equals(req.getServletPath())) {
                 String clientId = req.getParameter("clientId");
                 String dateCreationStr = req.getParameter("dateCreation");
@@ -251,7 +253,7 @@ public class CompteCourantController extends HttpServlet {
                         resp.sendRedirect(req.getContextPath() + "/compte-courant/transaction?compteId=" + compteId + "&error=" + java.net.URLEncoder.encode("Vous n'avez pas les droits nécessaires pour créer une transaction.", "UTF-8"));
                         return;
                     }
-                    BigDecimal montantAvecDevise = changeService.calculate(montant, devise,dateTransaction.toLocalDate());
+                    BigDecimal montantAvecDevise = changeService.calculate(path, montant, devise,dateTransaction.toLocalDate());
                     System.out.println("devise = " + devise);
                     System.out.println("montantAvecDevise = " + montantAvecDevise);
                     
