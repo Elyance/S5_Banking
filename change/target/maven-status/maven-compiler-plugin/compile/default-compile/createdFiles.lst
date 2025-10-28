@@ -1,1 +1,3 @@
+com/change/controller/ChangeRest.class
+com/change/controller/JAXRSConfiguration.class
 com/change/service/ChangeService.class

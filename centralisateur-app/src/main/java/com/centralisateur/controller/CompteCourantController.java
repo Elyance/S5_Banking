@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import com.centralisateur.service.CompteCourantService;
 import com.centralisateur.service.AuthService;
+import com.centralisateur.service.ChangeApiService;
 import com.centralisateur.service.ClientService;
 import com.centralisateur.dto.CompteCourantAvecClient;
 import com.centralisateur.service.ChangeService;
@@ -35,6 +36,9 @@ public class CompteCourantController extends HttpServlet {
 
     @Inject
     private ChangeService changeService;
+
+    @Inject
+    private ChangeApiService changeApiService;
 
     // private final ChangeApiClient change = new ChangeApiClient("http://localhost:6660/change/api/change");
 
@@ -85,7 +89,7 @@ public class CompteCourantController extends HttpServlet {
             return;
 
         } else if ("/compte-courant/transaction".equals(req.getServletPath())) {
-            // List<String> devisesWebService = change.getDevises();
+            List<String> devisesWebService = changeApiService.getDevises();
 
             List<String> devises = changeService.getListeDevises();
             System.out.println("Devises disponibles: " + devises);
@@ -98,7 +102,7 @@ public class CompteCourantController extends HttpServlet {
                 req.setAttribute("typeOperations", typeOperations);
                 req.setAttribute("decouvertAutorise", compteCourantService.getDecouvertValueByDate(compte.getDateCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
                 req.setAttribute("devises", devises);
-                // req.setAttribute("devisesApi", devisesWebService);
+                req.setAttribute("devisesApi", devisesWebService);
                 if (error != null) {
                     req.setAttribute("errorMessage", error);
                 }

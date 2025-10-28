@@ -7,18 +7,5 @@
 
     <display-name>Banking Change Service</display-name>
 
-    <!-- RESTEasy servlet declaration and mapping to expose JAX-RS resources under /api/* -->
-    <servlet>
-        <servlet-name>resteasy-servlet</servlet-name>
-        <servlet-class>org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher</servlet-class>
-        <load-on-startup>1</load-on-startup>
-    </servlet>
-
-    <servlet-mapping>
-        <servlet-name>resteasy-servlet</servlet-name>
-        <url-pattern>/api/*</url-pattern>
-    </servlet-mapping>
-</web-app>
-
 </web-app>
 
