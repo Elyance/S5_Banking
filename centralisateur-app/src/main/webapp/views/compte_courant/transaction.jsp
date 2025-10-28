@@ -106,6 +106,22 @@
                         </div>
 
                         <div class="mb-3">
+                            <label for="montant" class="form-label">Montant</label>
+                            <div class="input-group">
+                                <input type="number" step="0.01" min="0.01" name="montant" id="montant" class="form-control" required />
+                                <!-- Sélecteur de devise -->
+                                <select name="devise" class="form-select" style="max-width: 120px;" required>
+                                    <option value="">Devise</option>
+                                    <c:forEach var="devise" items="${devises}">
+                                        <option value="${devise}">${devise}</option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                            <div class="form-text text-muted">Entrez un montant positif. Une confirmation vous sera demandée si nécessaire.</div>
+                            <div class="invalid-feedback">Veuillez saisir un montant valide et sélectionner une devise.</div>
+                        </div>
+
+                        <div class="mb-3">
                             <label for="description" class="form-label">Description (facultatif)</label>
                             <textarea name="description" id="description" class="form-control" rows="2" placeholder="Ex: Paiement loyer, retrait distributeur..."></textarea>
                         </div>

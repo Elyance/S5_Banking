@@ -6,7 +6,6 @@ import jakarta.persistence.PersistenceContext;
 import jakarta.persistence.TypedQuery;
 
 import com.compte_courant.entity.TransactionStatutMouvement;
-import com.compte_courant.entity.Transaction;
 import java.util.List;
 
 @ApplicationScoped

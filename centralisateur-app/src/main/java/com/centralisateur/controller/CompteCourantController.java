@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.xml.ws.Action;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 
@@ -36,6 +35,8 @@ public class CompteCourantController extends HttpServlet {
 
     @Inject
     private ChangeService changeService;
+
+    // private final ChangeApiClient change = new ChangeApiClient("http://localhost:6660/change/api/change");
 
     // Simuler l'utilisateur connecté (à remplacer par la gestion réelle des utilisateurs)
 
@@ -84,8 +85,10 @@ public class CompteCourantController extends HttpServlet {
             return;
 
         } else if ("/compte-courant/transaction".equals(req.getServletPath())) {
-            String path = "change.csv";
-            List<String> devises = changeService.getListeDevises(path);
+            // List<String> devisesWebService = change.getDevises();
+
+            List<String> devises = changeService.getListeDevises();
+            System.out.println("Devises disponibles: " + devises);
             String compteId = req.getParameter("compteId");
             String error = req.getParameter("error");
             if (compteId != null) {
@@ -95,6 +98,7 @@ public class CompteCourantController extends HttpServlet {
                 req.setAttribute("typeOperations", typeOperations);
                 req.setAttribute("decouvertAutorise", compteCourantService.getDecouvertValueByDate(compte.getDateCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
                 req.setAttribute("devises", devises);
+                // req.setAttribute("devisesApi", devisesWebService);
                 if (error != null) {
                     req.setAttribute("errorMessage", error);
                 }
@@ -181,7 +185,7 @@ public class CompteCourantController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
-            String path = "change.csv";
+            String path = "data/changes.csv";
             if ("/compte-courant/create".equals(req.getServletPath())) {
                 String clientId = req.getParameter("clientId");
                 String dateCreationStr = req.getParameter("dateCreation");

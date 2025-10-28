@@ -1,3 +1,4 @@
+com/centralisateur/client/ChangeApiClient.class
 com/centralisateur/controller/CompteDepotController.class
 com/centralisateur/repository/AdminBanqueRepository.class
 com/centralisateur/service/CompteCourantService.class
@@ -6,6 +7,7 @@ com/centralisateur/controller/ClientController.class
 com/centralisateur/service/CompteDepotService.class
 com/centralisateur/entity/Client.class
 com/centralisateur/repository/StatutClientRepository.class
+com/centralisateur/client/ChangeApiClient$1.class
 com/centralisateur/entity/AdminBanque.class
 com/centralisateur/dto/ClientWithStatusDTO.class
 com/centralisateur/service/AuthService.class
