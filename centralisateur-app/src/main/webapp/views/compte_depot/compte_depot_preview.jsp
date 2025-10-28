@@ -12,7 +12,7 @@
         <p><strong>Client :</strong> ${client.nom} ${client.prenom} (ID: ${client.id})</p>
         <p><strong>Type de compte :</strong> Compte Dépôt</p>
         <p><strong>Date de création :</strong> ${dateCreation}</p>
-        <p><strong>Solde initial :</strong> <fmt:formatNumber value="${solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> €</p>
+        <p><strong>Solde initial :</strong> <fmt:formatNumber value="${solde}" type="number" minFractionDigits="2" maxFractionDigits="2" /> Ariary</p>
         <p><strong>Taux d'intérêt :</strong> ${tauxInteret != null ? tauxInteret : "À définir ultérieurement"}</p>
     </div>
     <div class="card-footer">

@@ -14,12 +14,15 @@ com/centralisateur/dto/CompteCourantAvecClient.class
 com/centralisateur/service/ClientService.class
 com/centralisateur/controller/CompteCourantController.class
 com/centralisateur/dto/CompteDepotAvecClient.class
+com/centralisateur/service/ChangeApiService.class
 com/centralisateur/repository/MvtClientRepository.class
 com/centralisateur/entity/StatutClient.class
 com/centralisateur/service/AdminService.class
 com/centralisateur/controller/AuthController.class
+com/centralisateur/service/ChangeApiService$1.class
 com/centralisateur/service/ComptePretService.class
 com/centralisateur/controller/ComptePretController.class
 com/centralisateur/dto/ComptePretAvecClient.class
+com/centralisateur/service/ChangeService.class
 com/centralisateur/controller/CompteController.class
 com/centralisateur/entity/MvtClient.class

@@ -1,0 +1,6 @@
+docker run -d -p 6660:8080 -p 9090:9990 4547:4447 --name change wildfly
+docker images  ---- pour les images
+docker ps  ---- pour les conteneur
+docker exec -it change /opt/wildfly/bin/add-user.sh   -- ajouter un utilisateur pour le wildfly
+docker restart change   -- redemarrer le conteneur
+docker cp target/change.war change:/opt/wildfly/standalone/deployments/  --- copier le .war dans le conteneur

@@ -33,7 +33,7 @@
                     <c:forEach var="contrat" items="${contrats}">
                         <tr>
                             <td>${contrat.id}</td>
-                            <td><fmt:formatNumber value="${contrat.montantEmprunte}" type="currency" currencySymbol="€"/></td>
+                            <td><fmt:formatNumber value="${contrat.montantEmprunte}" type="currency" currencySymbol="Ariary"/></td>
                             <td>${contrat.dateDebutContrat}</td>
                             <td>${contrat.dateFinContrat}</td>
                             <td>${contrat.duree}</td>

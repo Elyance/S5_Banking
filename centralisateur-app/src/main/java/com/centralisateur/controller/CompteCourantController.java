@@ -5,15 +5,16 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.xml.ws.Action;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 
 import java.math.BigDecimal;
 import com.centralisateur.service.CompteCourantService;
 import com.centralisateur.service.AuthService;
+import com.centralisateur.service.ChangeApiService;
 import com.centralisateur.service.ClientService;
 import com.centralisateur.dto.CompteCourantAvecClient;
+import com.centralisateur.service.ChangeService;
 import com.centralisateur.entity.Client;
 import java.util.List;
 import java.util.ArrayList;
@@ -32,6 +33,14 @@ public class CompteCourantController extends HttpServlet {
     
     @Inject
 	private ClientService clientService;
+
+    @Inject
+    private ChangeService changeService;
+
+    @Inject
+    private ChangeApiService changeApiService;
+
+    // private final ChangeApiClient change = new ChangeApiClient("http://localhost:6660/change/api/change");
 
     // Simuler l'utilisateur connecté (à remplacer par la gestion réelle des utilisateurs)
 
@@ -80,6 +89,10 @@ public class CompteCourantController extends HttpServlet {
             return;
 
         } else if ("/compte-courant/transaction".equals(req.getServletPath())) {
+            List<String> devisesWebService = changeApiService.getDevises();
+
+            List<String> devises = changeService.getListeDevises();
+            System.out.println("Devises disponibles: " + devises);
             String compteId = req.getParameter("compteId");
             String error = req.getParameter("error");
             if (compteId != null) {
@@ -88,6 +101,8 @@ public class CompteCourantController extends HttpServlet {
                 req.setAttribute("compte", compte);
                 req.setAttribute("typeOperations", typeOperations);
                 req.setAttribute("decouvertAutorise", compteCourantService.getDecouvertValueByDate(compte.getDateCreation().toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime()));
+                req.setAttribute("devises", devises);
+                req.setAttribute("devisesApi", devisesWebService);
                 if (error != null) {
                     req.setAttribute("errorMessage", error);
                 }
@@ -174,6 +189,7 @@ public class CompteCourantController extends HttpServlet {
 	@Override
 	protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 		try {
+            String path = "data/changes.csv";
             if ("/compte-courant/create".equals(req.getServletPath())) {
                 String clientId = req.getParameter("clientId");
                 String dateCreationStr = req.getParameter("dateCreation");
@@ -196,7 +212,14 @@ public class CompteCourantController extends HttpServlet {
                 String montantStr = req.getParameter("montant");
                 String description = req.getParameter("description");
                 String dateTransactionStr = req.getParameter("dateTransaction");
+                String devise = req.getParameter("devise");
+                System.out.println("devise = " + devise);
                 LocalDateTime dateTransaction;
+                if (devise == null || devise.isEmpty()) {
+                    resp.sendError(HttpServletResponse.SC_BAD_REQUEST, "La devise est requise");
+                    return;
+                }
+                
                 if (dateTransactionStr != null && !dateTransactionStr.isEmpty()) {
                     dateTransaction = parseDateTime(dateTransactionStr);
                 } else {
@@ -238,9 +261,11 @@ public class CompteCourantController extends HttpServlet {
                         resp.sendRedirect(req.getContextPath() + "/compte-courant/transaction?compteId=" + compteId + "&error=" + java.net.URLEncoder.encode("Vous n'avez pas les droits nécessaires pour créer une transaction.", "UTF-8"));
                         return;
                     }
-
-                    // Appel du service métier pour effectuer la transaction
-                    compteCourantService.faireTransaction(Long.parseLong(compteId), Long.parseLong(typeOperationId), montant, description, dateTransaction);
+                    BigDecimal montantAvecDevise = changeService.calculate(path, montant, devise,dateTransaction.toLocalDate());
+                    System.out.println("devise = " + devise);
+                    System.out.println("montantAvecDevise = " + montantAvecDevise);
+                    
+                    compteCourantService.faireTransaction(Long.parseLong(compteId), Long.parseLong(typeOperationId), montantAvecDevise, description, dateTransaction);
 
                     // Redirige vers une page de succès ou la liste des comptes
                     resp.sendRedirect(req.getContextPath() + "/compte-courant/success");

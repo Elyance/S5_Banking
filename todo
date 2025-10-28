@@ -1,0 +1,8 @@
+structure anle fichier : devise,dateDeb,dateFin,change -> csv
+dans le change-app :
+    - fonction mandefa liste <devise>
+    - recherche de ChangeDTO(devise,date) : tediaviny
+dans le centralisateur 
+    - formulaire de transaction miampy anle champ devise (liste de devise)
+    - refa manao transaction izy de on appelle la fonction recherche(devise, date) -> change(prix en Ariary) 
+    - si c'est Ariary on change pas sinon de on doit changer en Ariary 

@@ -31,9 +31,9 @@
                         <tr>
                             <td>${echeance.id}</td>
                                                         <td>${echeance.dateEcheance}</td>
-                            <td><fmt:formatNumber value="${echeance.montantCapital}" type="currency" currencySymbol="€"/></td>
-                            <td><fmt:formatNumber value="${echeance.montantInteret}" type="currency" currencySymbol="€"/></td>
-                            <td><fmt:formatNumber value="${echeance.montantTotal}" type="currency" currencySymbol="€"/></td>
+                            <td><fmt:formatNumber value="${echeance.montantCapital}" type="currency" currencySymbol="Ariary"/></td>
+                            <td><fmt:formatNumber value="${echeance.montantInteret}" type="currency" currencySymbol="Ariary"/></td>
+                            <td><fmt:formatNumber value="${echeance.montantTotal}" type="currency" currencySymbol="Ariary"/></td>
                             <td>
                                 <c:choose>
                                     <c:when test="${echeance.statutLibelle == 'PAYÉ'}">

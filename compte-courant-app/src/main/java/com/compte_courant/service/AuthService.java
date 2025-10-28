@@ -5,7 +5,6 @@ import jakarta.ejb.Remove;
 import jakarta.inject.Inject;
 import com.compte_courant.entity.Utilisateur;
 import com.compte_courant.entity.Direction;
-import com.compte_courant.entity.ActionRole;
 import com.compte_courant.repository.UtilisateurRepository;
 import com.compte_courant.repository.DirectionRepository;
 import com.compte_courant.repository.ActionRoleRepository;

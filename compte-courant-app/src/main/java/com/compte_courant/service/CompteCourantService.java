@@ -1,6 +1,5 @@
 package com.compte_courant.service;
 
-import jakarta.ejb.Local;
 import jakarta.ejb.Stateless;
 import jakarta.inject.Inject;
 import jakarta.transaction.Transactional;
