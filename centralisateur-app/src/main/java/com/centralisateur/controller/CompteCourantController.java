@@ -5,6 +5,7 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
+import jakarta.xml.ws.Action;
 import jakarta.servlet.ServletException;
 import java.io.IOException;
 
@@ -35,11 +36,11 @@ public class CompteCourantController extends HttpServlet {
     // Simuler l'utilisateur connecté (à remplacer par la gestion réelle des utilisateurs)
 
     // private final UtilisateurDTO utilisateur = (AuthSercice) session.getAttribute("utilisateur"); // Exemple d'utilisateur avec rôle administrateur
-    private UtilisateurDTO getUtilisateurFromSession(HttpServletRequest req) {
+    private AuthService getAuthServiceFromSession(HttpServletRequest req) {
         HttpSession session = req.getSession(false);
         if (session != null) {
             AuthService authService = (AuthService) session.getAttribute("authService");
-            return (UtilisateurDTO) authService.getCurrentUser();
+            return authService;
         }
         return null;
     }
@@ -213,10 +214,33 @@ public class CompteCourantController extends HttpServlet {
                     return;
                 }
 
+                AuthService authService = getAuthServiceFromSession(req);
+                if (authService == null || !authService.isLoggedIn()) {
+                    resp.sendRedirect(req.getContextPath() + "/login");
+                    return;
+                }
+
                 try {
+                    boolean hasPermission = false;
+                    int requiredRole = Integer.MAX_VALUE;
+                    List<ActionRoleDTO> actions = authService.getActionRoles();
+                    for (ActionRoleDTO actionRoleDTO : actions) {
+                        if (actionRoleDTO.getAction().equals("CREATE") && actionRoleDTO.getNomTable().equals("transactions")) {
+                            requiredRole = actionRoleDTO.getRole();
+                            hasPermission = true;
+                            break;
+                        }
+                    }
+                    if (!hasPermission) {
+                        resp.sendRedirect(req.getContextPath() + "/compte-courant/transaction?compteId=" + compteId + "&error=" + java.net.URLEncoder.encode("Vous n'avez pas les droits nécessaires pour créer une transaction.", "UTF-8"));
+                        return;
+                    } else if (requiredRole > authService.getCurrentUser().getRole()) {
+                        resp.sendRedirect(req.getContextPath() + "/compte-courant/transaction?compteId=" + compteId + "&error=" + java.net.URLEncoder.encode("Vous n'avez pas les droits nécessaires pour créer une transaction.", "UTF-8"));
+                        return;
+                    }
+
                     // Appel du service métier pour effectuer la transaction
-                    
-                    compteCourantService.faireTransaction(getUtilisateurFromSession(req), Long.parseLong(compteId), Long.parseLong(typeOperationId), montant, description, dateTransaction);
+                    compteCourantService.faireTransaction(Long.parseLong(compteId), Long.parseLong(typeOperationId), montant, description, dateTransaction);
 
                     // Redirige vers une page de succès ou la liste des comptes
                     resp.sendRedirect(req.getContextPath() + "/compte-courant/success");
@@ -286,10 +310,30 @@ public class CompteCourantController extends HttpServlet {
                     return;
                 }
                 Long transactionId = Long.parseLong(transactionIdStr);
+                AuthService authService = getAuthServiceFromSession(req);
+                if (authService == null || !authService.isLoggedIn()) {
+                    resp.sendRedirect(req.getContextPath() + "/login");
+                    return;
+                }
                 try {
-                    compteCourantService.validerTransaction(getUtilisateurFromSession(req), transactionId);
-                    // Rediriger vers la liste des transactions du compte
-                    resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr);
+                    boolean hasPermission = false;
+                    int requiredRole = Integer.MAX_VALUE;
+                    List<ActionRoleDTO> actions = authService.getActionRoles();
+                    for (ActionRoleDTO actionRoleDTO : actions) {
+                        if (actionRoleDTO.getAction().equals("VALIDATE") && actionRoleDTO.getNomTable().equals("transactions")) {
+                            requiredRole = actionRoleDTO.getRole();
+                            hasPermission = true;
+                            break;
+                        }
+                    }
+                    if (!hasPermission) {
+                        resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr + "&error=" + java.net.URLEncoder.encode("Vous n'avez pas les droits nécessaires pour valider cette transaction.", "UTF-8"));
+                    } else if (requiredRole > authService.getCurrentUser().getRole()) {
+                        resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr + "&error=" + java.net.URLEncoder.encode("Vous n'avez pas les droits nécessaires pour valider cette transaction.", "UTF-8"));
+                    } else {
+                        compteCourantService.validerTransaction(transactionId);
+                        resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr);
+                    }
                 } catch (Exception e) {
                     // En cas d'erreur, rediriger vers la liste des transactions avec l'erreur
                     resp.sendRedirect(req.getContextPath() + "/compte-courant/transactions/list?compteId=" + compteIdStr + "&error=" + java.net.URLEncoder.encode(e.getMessage(), "UTF-8"));
