@@ -3,15 +3,30 @@ creation du pom.xml
 
 configuration anle base (database,table)
 -- creation de module postgres (raha mbola tsisy)
+    -maka jar 
+    - atao anaty modules ...  base/postgres/main
+    - mamorona .xml
+    <?xml version="1.0" encoding="UTF-8"?>
+<module xmlns="urn:jboss:module:1.5" name="org.postgresql">
+    <resources>
+        <resource-root path="postgresql-42.6.0.jar"/>
+    </resources>
+    <dependencies>
+        <module name="javax.api"/>
+        <module name="javax.transaction.api"/>
+    </dependencies>
+</module>
 
 
 configuration de datasource
     - miditra ao am cli ./jboss-cli.sh --connect
+    - mila enregistrena le base je pense : /subsystem=datasources/jdbc-driver=postgresql:add(driver-name=postgresql,driver-module-name=org.postgresql,driver-class-name=org.postgresql.Driver)
+
     - on insere ca : 
-            /subsystem=datasources/data-source=BanqueCP:add(\
-jndi-name=java:jboss/datasources/BanqueCP,\
+            /subsystem=datasources/data-source=BanqueC:add(\
+jndi-name=java:jboss/datasources/BanqueC,\
 driver-name=postgresql,\
-connection-url=jdbc:postgresql://localhost:5432/compte_pret_db,\
+connection-url=jdbc:postgresql://localhost:5432/centralisateur_db,\
 user-name=postgres,\
 password=postgres,\
 min-pool-size=5,\

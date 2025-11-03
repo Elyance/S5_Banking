@@ -11,11 +11,11 @@
         <jta-data-source>java:jboss/datasources/BanqueCC</jta-data-source>
 
         <!-- Entités du domaine -->
-        <class>com.compteCourant.entity.StatutCompte</class>
-        <class>com.compteCourant.entity.TypeOperation</class>
-        <class>com.compteCourant.entity.CompteCourant</class>
-        <class>com.compteCourant.entity.Transaction</class>
-        <class>com.compteCourant.entity.StatutCompteCourantMvt</class>
+        <class>com.compte_courant.entity.StatutCompte</class>
+        <class>com.compte_courant.entity.TypeOperation</class>
+        <class>com.compte_courant.entity.CompteCourant</class>
+        <class>com.compte_courant.entity.Transaction</class>
+        <class>com.compte_courant.entity.StatutCompteCourantMvt</class>
         <class>com.compte_courant.entity.Utilisateur</class>
         <class>com.compte_courant.entity.Role</class>
         <class>com.compte_courant.entity.ActionRole</class>

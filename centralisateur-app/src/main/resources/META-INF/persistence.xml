@@ -9,7 +9,7 @@
     <persistence-unit name="CentralisateurPU" transaction-type="JTA">
         
         <!-- DataSource JNDI pour WildFly -->
-        <jta-data-source>java:jboss/datasources/BanqueCentralisateur</jta-data-source>
+        <jta-data-source>java:jboss/datasources/BanqueC</jta-data-source>
         
         <!-- Propriétés Hibernate pour WildFly -->
         <properties>

@@ -1,13 +1,13 @@
+/home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/remote/AuthServiceRemote.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/dto/DirectionDTO.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/dto/CompteCourantWithStatusDTO.java
-/home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/remote/AuthServiceRemote.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/dto/UtilisateurDTO.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_pret/dto/ComptePretWithStatusDTO.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/change/remote/ChangeServiceRemote.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/change/dto/ChangeDTO.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/dto/ActionRoleDTO.java
-/home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/remote/CompteCourantServiceRemote.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_pret/remote/ComptePretServiceRemote.java
-/home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/dto/TransactionDTO.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/remote/CompteCourantServiceRemote.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_pret/dto/ContratPretDTO.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_pret/dto/EcheanceDTO.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/banking-shared/src/main/java/com/compte_courant/dto/TransactionDTO.java

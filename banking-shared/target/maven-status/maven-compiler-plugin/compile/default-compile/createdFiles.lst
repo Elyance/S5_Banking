@@ -1,12 +1,12 @@
 com/compte_courant/dto/TransactionDTO.class
 com/compte_pret/dto/EcheanceDTO.class
-com/change/dto/ChangeDTO.class
 com/compte_pret/dto/ContratPretDTO.class
+com/change/dto/ChangeDTO.class
 com/compte_courant/dto/ActionRoleDTO.class
 com/compte_courant/dto/CompteCourantWithStatusDTO.class
 com/compte_courant/dto/UtilisateurDTO.class
-com/compte_courant/dto/DirectionDTO.class
 com/compte_courant/remote/CompteCourantServiceRemote.class
+com/compte_courant/dto/DirectionDTO.class
 com/compte_pret/remote/ComptePretServiceRemote.class
 com/compte_courant/remote/AuthServiceRemote.class
 com/change/remote/ChangeServiceRemote.class

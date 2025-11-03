@@ -9,3 +9,4 @@ compte-depot-app/TestResults/
 compte-depot-app/*.log
 compte-depot-app/appsettings.Development.json
 change/target/
+.fake

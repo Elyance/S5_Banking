@@ -1,6 +1,6 @@
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/dto/ClientWithStatusDTO.java
-/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/dto/ComptePretAvecClient.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/repository/MvtClientRepository.java
+/home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/dto/ComptePretAvecClient.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/entity/Client.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/controller/ComptePretController.java
 /home/elyance/Documents/S5/Programmation/S5_Banking/centralisateur-app/src/main/java/com/centralisateur/service/AuthService.java
